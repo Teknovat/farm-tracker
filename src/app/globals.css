@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* RTL Support */
+@layer base {
+  /* RTL-specific styles */
+  [dir="rtl"] {
+    text-align: right;
+  }
+
+  [dir="rtl"] .rtl\:text-left {
+    text-align: left;
+  }
+
+  [dir="rtl"] .rtl\:text-right {
+    text-align: right;
+  }
+
+  /* RTL-aware margins and padding */
+  [dir="rtl"] .rtl\:ml-auto {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  [dir="rtl"] .rtl\:mr-auto {
+    margin-right: auto;
+    margin-left: 0;
+  }
+
+  [dir="rtl"] .rtl\:pl-4 {
+    padding-left: 1rem;
+    padding-right: 0;
+  }
+
+  [dir="rtl"] .rtl\:pr-4 {
+    padding-right: 1rem;
+    padding-left: 0;
+  }
+
+  /* RTL-aware borders */
+  [dir="rtl"] .rtl\:border-l {
+    border-left-width: 1px;
+    border-right-width: 0;
+  }
+
+  [dir="rtl"] .rtl\:border-r {
+    border-right-width: 1px;
+    border-left-width: 0;
+  }
+
+  /* RTL-aware flex direction */
+  [dir="rtl"] .rtl\:flex-row-reverse {
+    flex-direction: row-reverse;
+  }
+
+  /* RTL-aware transforms */
+  [dir="rtl"] .rtl\:scale-x-[-1] {
+    transform: scaleX(-1);
+  }
+}
+
+/* Mobile-first optimizations */
+@layer base {
+  /* Ensure minimum touch target sizes */
+  button,
+  input,
+  select,
+  textarea,
+  a[role="button"] {
+    min-height: 44px;
+  }
+
+  /* Improve text readability on mobile */
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Prevent zoom on input focus on iOS */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  input[type="tel"],
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Safe area for mobile devices with notches */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
