@@ -1,41 +1,26 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { MobileLayout } from "@/components/layout/MobileLayout";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { useAuth } from "@/lib/auth/context";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-// Mock data for now - will be replaced with real API calls
-const mockAnimals = [
-  {
-    id: "1",
-    type: "INDIVIDUAL",
-    species: "Cow",
-    sex: "FEMALE",
-    status: "ACTIVE",
-    photoUrl: null,
-    birthDate: "2022-03-15",
-    createdAt: "2023-01-10",
-  },
-  {
-    id: "2",
-    type: "LOT",
-    species: "Sheep",
-    status: "ACTIVE",
-    lotCount: 25,
-    photoUrl: null,
-    createdAt: "2023-02-20",
-  },
-  {
-    id: "3",
-    type: "INDIVIDUAL",
-    species: "Goat",
-    sex: "MALE",
-    status: "SOLD",
-    photoUrl: null,
-    birthDate: "2021-08-10",
-    createdAt: "2023-01-05",
-  },
-];
+interface Animal {
+  id: string;
+  type: "INDIVIDUAL" | "LOT";
+  species: string;
+  sex?: "MALE" | "FEMALE";
+  status: "ACTIVE" | "SOLD" | "DEAD";
+  photoUrl?: string | null;
+  birthDate?: string;
+  lotCount?: number;
+  createdAt: string;
+}
 
 const statusOptions = [
   { value: "ALL", label: "All Status" },
@@ -44,14 +29,7 @@ const statusOptions = [
   { value: "DEAD", label: "Dead" },
 ];
 
-const speciesOptions = [
-  { value: "ALL", label: "All Species" },
-  { value: "Cow", label: "Cow" },
-  { value: "Sheep", label: "Sheep" },
-  { value: "Goat", label: "Goat" },
-];
-
-function AnimalCard({ animal }: { animal: (typeof mockAnimals)[0] }) {
+function AnimalCard({ animal }: { animal: Animal }) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "ACTIVE":
@@ -105,13 +83,57 @@ function AnimalCard({ animal }: { animal: (typeof mockAnimals)[0] }) {
   );
 }
 
-export default function AnimalsPage() {
+function AnimalsContent() {
+  const [animals, setAnimals] = useState<Animal[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [speciesFilter, setSpeciesFilter] = useState("ALL");
+  const { farm } = useAuth();
+  const t = useTranslations("animals");
+
+  useEffect(() => {
+    if (farm) {
+      fetchAnimals();
+    }
+  }, [farm, statusFilter, speciesFilter]);
+
+  const fetchAnimals = async () => {
+    if (!farm) return;
+
+    setIsLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (statusFilter !== "ALL") params.append("status", statusFilter);
+      if (speciesFilter !== "ALL") params.append("species", speciesFilter);
+
+      const response = await fetch(`/api/farms/${farm.id}/animals?${params}`);
+      const data = await response.json();
+
+      if (data.success) {
+        setAnimals(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching animals:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Get unique species for filter
+  const speciesOptions = [
+    { value: "ALL", label: "All Species" },
+    ...Array.from(new Set(animals.map(a => a.species))).map(species => ({
+      value: species,
+      label: species
+    }))
+  ];
+
   return (
     <MobileLayout
-      title="Animals"
+      title={t("title")}
       actions={
         <Link href="/animals/new">
-          <Button size="sm">Add Animal</Button>
+          <Button size="sm">{t("addAnimal")}</Button>
         </Link>
       }
     >
@@ -119,31 +141,59 @@ export default function AnimalsPage() {
         {/* Filters */}
         <Card>
           <div className="grid grid-cols-2 gap-3">
-            <Select options={statusOptions} defaultValue="ALL" fullWidth />
-            <Select options={speciesOptions} defaultValue="ALL" fullWidth />
+            <Select
+              options={statusOptions}
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              fullWidth
+            />
+            <Select
+              options={speciesOptions}
+              value={speciesFilter}
+              onChange={(e) => setSpeciesFilter(e.target.value)}
+              fullWidth
+            />
           </div>
         </Card>
 
-        {/* Animals List */}
-        <div className="space-y-3">
-          {mockAnimals.map((animal) => (
-            <AnimalCard key={animal.id} animal={animal} />
-          ))}
-        </div>
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        )}
 
-        {mockAnimals.length === 0 && (
+        {/* Animals List */}
+        {!isLoading && animals.length > 0 && (
+          <div className="space-y-3">
+            {animals.map((animal) => (
+              <AnimalCard key={animal.id} animal={animal} />
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && animals.length === 0 && (
           <Card>
             <div className="text-center py-8">
               <div className="text-4xl mb-4">🐄</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No animals yet</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t("noAnimals")}</h3>
               <p className="text-gray-600 mb-4">Start by adding your first animal to the farm.</p>
               <Link href="/animals/new">
-                <Button>Add First Animal</Button>
+                <Button>{t("addAnimal")}</Button>
               </Link>
             </div>
           </Card>
         )}
       </div>
     </MobileLayout>
+  );
+}
+
+export default function AnimalsPage() {
+  return (
+    <ProtectedRoute>
+      <AnimalsContent />
+    </ProtectedRoute>
   );
 }

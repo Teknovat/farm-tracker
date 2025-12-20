@@ -7,6 +7,9 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { useAuth } from "@/lib/auth/context";
+import { useTranslations } from "next-intl";
 
 const typeOptions = [
   { value: "", label: "Select type" },
@@ -35,8 +38,10 @@ const statusOptions = [
   { value: "DEAD", label: "Dead" },
 ];
 
-export default function NewAnimalPage() {
+function NewAnimalContent() {
   const router = useRouter();
+  const { farm } = useAuth();
+  const t = useTranslations("animals");
 
   const [formData, setFormData] = useState({
     type: "",
@@ -50,22 +55,44 @@ export default function NewAnimalPage() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!farm) return;
+
     setIsSubmitting(true);
+    setError("");
 
     try {
-      // TODO: Submit to API
-      console.log("Submitting animal:", formData);
+      const animalData = {
+        type: formData.type,
+        species: formData.species === "Other" ? formData.customSpecies : formData.species,
+        sex: formData.sex || undefined,
+        birthDate: formData.birthDate || undefined,
+        estimatedAge: formData.estimatedAge ? parseInt(formData.estimatedAge) : undefined,
+        status: formData.status,
+        lotCount: formData.type === "LOT" && formData.lotCount ? parseInt(formData.lotCount) : undefined,
+      };
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(`/api/farms/${farm.id}/animals`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(animalData),
+      });
 
-      // Navigate back to animals list
-      router.push("/animals");
+      const data = await response.json();
+
+      if (data.success) {
+        router.push("/animals");
+      } else {
+        setError(data.error || "Failed to create animal");
+      }
     } catch (error) {
       console.error("Error creating animal:", error);
+      setError("Network error. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -213,5 +240,13 @@ export default function NewAnimalPage() {
         </div>
       </form>
     </MobileLayout>
+  );
+}
+
+export default function NewAnimalsPage() {
+  return (
+    <ProtectedRoute>
+      <NewAnimalContent />
+    </ProtectedRoute>
   );
 }

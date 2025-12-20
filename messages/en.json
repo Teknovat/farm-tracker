@@ -73,7 +73,8 @@
     "noAnimals": "No animals recorded",
     "animalCreated": "Animal created successfully",
     "animalUpdated": "Animal updated successfully",
-    "animalDeleted": "Animal deleted successfully"
+    "animalDeleted": "Animal deleted successfully",
+    "addEvent": "Add Event"
   },
   "events": {
     "title": "Events",

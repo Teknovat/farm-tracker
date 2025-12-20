@@ -74,7 +74,8 @@
     "noAnimals": "لا توجد حيوانات مسجلة",
     "animalCreated": "تم إنشاء الحيوان بنجاح",
     "animalUpdated": "تم تحديث الحيوان بنجاح",
-    "animalDeleted": "تم حذف الحيوان بنجاح"
+    "animalDeleted": "تم حذف الحيوان بنجاح",
+    "addEvent": "إضافة حدث"
   },
   "events": {
     "title": "الأحداث",

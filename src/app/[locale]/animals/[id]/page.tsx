@@ -1,52 +1,39 @@
 "use client";
 
-import { use } from "react";
+import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MobileLayout } from "@/components/layout/MobileLayout";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { useAuth } from "@/lib/auth/context";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-// Mock data for now - will be replaced with real API calls
-const mockAnimal = {
-  id: "1",
-  type: "INDIVIDUAL",
-  species: "Cow",
-  sex: "FEMALE",
-  status: "ACTIVE",
-  photoUrl: null,
-  birthDate: "2022-03-15",
-  estimatedAge: 22,
-  createdAt: "2023-01-10",
-};
+interface Animal {
+  id: string;
+  type: "INDIVIDUAL" | "LOT";
+  species: string;
+  sex?: "MALE" | "FEMALE";
+  status: "ACTIVE" | "SOLD" | "DEAD";
+  photoUrl?: string | null;
+  birthDate?: string;
+  estimatedAge?: number;
+  lotCount?: number;
+  createdAt: string;
+}
 
-const mockEvents = [
-  {
-    id: "1",
-    eventType: "BIRTH",
-    eventDate: "2022-03-15",
-    note: "Healthy birth, no complications",
-    createdBy: "John Doe",
-  },
-  {
-    id: "2",
-    eventType: "VACCINATION",
-    eventDate: "2023-04-10",
-    note: "Annual vaccination completed",
-    cost: 45.5,
-    nextDueDate: "2024-04-10",
-    createdBy: "Jane Smith",
-  },
-  {
-    id: "3",
-    eventType: "WEIGHT",
-    eventDate: "2023-06-15",
-    note: "Weight: 450kg",
-    createdBy: "John Doe",
-  },
-];
+interface Event {
+  id: string;
+  eventType: string;
+  eventDate: string;
+  note?: string;
+  cost?: number;
+  nextDueDate?: string;
+  createdBy?: string;
+}
 
-function EventCard({ event }: { event: (typeof mockEvents)[0] }) {
+function EventCard({ event }: { event: Event }) {
   const getEventIcon = (type: string) => {
     switch (type) {
       case "BIRTH":
@@ -115,9 +102,47 @@ function EventCard({ event }: { event: (typeof mockEvents)[0] }) {
   );
 }
 
-export default function AnimalDetailPage({ params }: { params: Promise<{ id: string }> }) {
+function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const [animal, setAnimal] = useState<Animal | null>(null);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { farm } = useAuth();
   const router = useRouter();
+  const t = useTranslations("animals");
+
+  useEffect(() => {
+    if (farm) {
+      fetchAnimalData();
+    }
+  }, [farm, id]);
+
+  const fetchAnimalData = async () => {
+    if (!farm) return;
+
+    setIsLoading(true);
+    try {
+      // Fetch animal details
+      const animalResponse = await fetch(`/api/farms/${farm.id}/animals/${id}`);
+      const animalData = await animalResponse.json();
+
+      if (animalData.success) {
+        setAnimal(animalData.data);
+      }
+
+      // Fetch animal events timeline
+      const eventsResponse = await fetch(`/api/farms/${farm.id}/events/timeline/${id}`);
+      const eventsData = await eventsResponse.json();
+
+      if (eventsData.success) {
+        setEvents(eventsData.data.events);
+      }
+    } catch (error) {
+      console.error("Error fetching animal data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -132,9 +157,31 @@ export default function AnimalDetailPage({ params }: { params: Promise<{ id: str
     }
   };
 
+  if (isLoading) {
+    return (
+      <MobileLayout title="Loading..." showBack onBack={() => router.back()}>
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+      </MobileLayout>
+    );
+  }
+
+  if (!animal) {
+    return (
+      <MobileLayout title="Not Found" showBack onBack={() => router.back()}>
+        <Card>
+          <div className="text-center py-8">
+            <p className="text-gray-600">Animal not found</p>
+          </div>
+        </Card>
+      </MobileLayout>
+    );
+  }
+
   return (
     <MobileLayout
-      title={`${mockAnimal.species} #${id}`}
+      title={`${animal.species} #${id.slice(0, 8)}`}
       showBack
       onBack={() => router.back()}
       actions={
@@ -150,8 +197,8 @@ export default function AnimalDetailPage({ params }: { params: Promise<{ id: str
         <Card>
           <div className="flex items-center space-x-4">
             <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
-              {mockAnimal.photoUrl ? (
-                <img src={mockAnimal.photoUrl} alt="Animal" className="w-full h-full object-cover rounded-lg" />
+              {animal.photoUrl ? (
+                <img src={animal.photoUrl} alt="Animal" className="w-full h-full object-cover rounded-lg" />
               ) : (
                 <span className="text-3xl">🐄</span>
               )}
@@ -159,19 +206,18 @@ export default function AnimalDetailPage({ params }: { params: Promise<{ id: str
 
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  {mockAnimal.species} #{id}
-                </h2>
-                <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(mockAnimal.status)}`}>
-                  {mockAnimal.status}
+                <h2 className="text-xl font-semibold text-gray-900">{animal.species}</h2>
+                <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(animal.status)}`}>
+                  {animal.status}
                 </span>
               </div>
 
               <div className="space-y-1 text-sm text-gray-600">
-                <div>Type: {mockAnimal.type}</div>
-                {mockAnimal.sex && <div>Sex: {mockAnimal.sex}</div>}
-                {mockAnimal.birthDate && <div>Born: {new Date(mockAnimal.birthDate).toLocaleDateString()}</div>}
-                {mockAnimal.estimatedAge && <div>Age: {mockAnimal.estimatedAge} months</div>}
+                <div>Type: {animal.type}</div>
+                {animal.sex && <div>Sex: {animal.sex}</div>}
+                {animal.type === "LOT" && animal.lotCount && <div>Count: {animal.lotCount} animals</div>}
+                {animal.birthDate && <div>Born: {new Date(animal.birthDate).toLocaleDateString()}</div>}
+                {animal.estimatedAge && <div>Age: {animal.estimatedAge} months</div>}
               </div>
             </div>
           </div>
@@ -185,7 +231,7 @@ export default function AnimalDetailPage({ params }: { params: Promise<{ id: str
           <div className="grid grid-cols-2 gap-3">
             <Link href={`/events/new?animalId=${id}`}>
               <Button fullWidth variant="primary">
-                Add Event
+                {t("addEvent")}
               </Button>
             </Link>
             <Button fullWidth variant="secondary">
@@ -203,16 +249,24 @@ export default function AnimalDetailPage({ params }: { params: Promise<{ id: str
         {/* Recent Events */}
         <Card>
           <CardHeader>
-            <CardTitle>Recent Events</CardTitle>
+            <CardTitle>{t("timeline")}</CardTitle>
           </CardHeader>
           <div className="space-y-3">
-            {mockEvents.map((event) => (
+            {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
-            {mockEvents.length === 0 && <p className="text-gray-500 text-center py-4">No events recorded yet</p>}
+            {events.length === 0 && <p className="text-gray-500 text-center py-4">No events recorded yet</p>}
           </div>
         </Card>
       </div>
     </MobileLayout>
+  );
+}
+
+export default function AnimalDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  return (
+    <ProtectedRoute>
+      <AnimalDetailContent params={params} />
+    </ProtectedRoute>
   );
 }

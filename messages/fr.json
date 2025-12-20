@@ -74,7 +74,8 @@
     "noAnimals": "Aucun animal enregistré",
     "animalCreated": "Animal créé avec succès",
     "animalUpdated": "Animal mis à jour avec succès",
-    "animalDeleted": "Animal supprimé avec succès"
+    "animalDeleted": "Animal supprimé avec succès",
+    "addEvent": "Ajouter un événement"
   },
   "events": {
     "title": "Événements",
