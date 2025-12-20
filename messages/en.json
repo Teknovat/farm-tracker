@@ -196,12 +196,49 @@
   "errors": {
     "generic": "An error occurred",
     "networkError": "Network error",
-    "unauthorized": "Unauthorized",
-    "forbidden": "Access forbidden",
-    "notFound": "Not found",
-    "serverError": "Server error",
-    "validationError": "Validation error",
-    "tryAgain": "Please try again"
+    "unauthorized": "You must be logged in to access this resource",
+    "forbidden": "You do not have permission to perform this action",
+    "notFound": "The requested resource was not found",
+    "serverError": "An internal server error occurred",
+    "validationError": "The provided data is invalid",
+    "tryAgain": "Please try again",
+    "animalNotFound": "Animal not found",
+    "farmNotFound": "Farm not found",
+    "eventNotFound": "Event not found",
+    "invalidCredentials": "Invalid email or password",
+    "requiredField": "This field is required",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidAmount": "Amount must be a positive number",
+    "invalidDate": "Please enter a valid date",
+    "invalidStatusTransition": "Invalid status change",
+    "hasActiveEvents": "Cannot change status - animal has upcoming events",
+    "hasEvents": "Cannot delete animal with existing events",
+    "inactiveTarget": "Cannot create events for inactive animals",
+    "futureEventNotAllowed": "This event type cannot be scheduled in the future",
+    "alreadyDead": "Animal is already marked as dead",
+    "alreadySold": "Animal is already marked as sold",
+    "cannotSellDead": "Cannot sell a dead animal",
+    "saleRequiresCost": "Sale events must have a cost value",
+    "birthNotForLots": "Birth events are not applicable to lot-type animals",
+    "birthEventExists": "Animal already has a birth event recorded",
+    "deathEventExists": "Animal already has a death event recorded",
+    "insufficientBalance": "Insufficient cashbox balance",
+    "creditExpenseNotFound": "Credit expense not found",
+    "alreadyReimbursed": "Credit expense is already fully reimbursed",
+    "exceedsRemainingDebt": "Reimbursement amount exceeds remaining debt",
+    "invalidReimbursementAmount": "Reimbursement amount must be positive",
+    "memberNotFound": "Member not found in this farm",
+    "lastOwnerRemoval": "Cannot remove the last owner of the farm",
+    "lastOwnerRoleChange": "Cannot change the role of the last owner",
+    "notALot": "Count operations are only valid for lot-type animals",
+    "insufficientLotCount": "Cannot decrease count - insufficient animals in lot",
+    "lotCountZero": "Cannot reduce lot count to zero",
+    "exportPermissionDenied": "You do not have permission to export data",
+    "financialExportRestricted": "Only farm owners can export financial data",
+    "duplicateResource": "This resource already exists",
+    "invalidReference": "Invalid reference to related resource",
+    "missingRequiredField": "Required field is missing",
+    "checkConstraintViolation": "Data validation constraint violated"
   },
   "dates": {
     "today": "Today",
@@ -213,5 +250,131 @@
     "weeksFromNow": "In {weeks} weeks",
     "monthsAgo": "{months} months ago",
     "monthsFromNow": "In {months} months"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidType": "Invalid data type",
+    "stringMin": "Minimum {min} characters required",
+    "stringMax": "Maximum {max} characters allowed",
+    "stringEmpty": "This field cannot be empty",
+    "numberMin": "Value must be at least {min}",
+    "numberMax": "Value cannot exceed {max}",
+    "numberPositive": "Value must be a positive number",
+    "numberInt": "Value must be a whole number",
+    "invalidEmail": "Invalid email address",
+    "invalidUrl": "Invalid URL format",
+    "invalidUuid": "Invalid identifier format",
+    "invalidDatetime": "Invalid date format",
+    "invalidEnum": "Invalid value",
+    "amount": {
+      "required": "Amount is required",
+      "invalidType": "Amount must be a number",
+      "positive": "Amount must be positive",
+      "maxExceeded": "Amount cannot exceed {max}"
+    },
+    "description": {
+      "required": "Description is required",
+      "empty": "Description cannot be empty",
+      "maxLength": "Description cannot exceed {max} characters"
+    },
+    "category": {
+      "required": "Category is required",
+      "invalid": "Invalid category selected"
+    },
+    "species": {
+      "required": "Species is required",
+      "empty": "Species cannot be empty",
+      "maxLength": "Species name cannot exceed {max} characters"
+    },
+    "sex": {
+      "invalid": "Sex must be either MALE or FEMALE"
+    },
+    "birthDate": {
+      "invalid": "Invalid date format"
+    },
+    "estimatedAge": {
+      "invalidType": "Age must be a number",
+      "int": "Age must be a whole number",
+      "negative": "Age cannot be negative",
+      "maxExceeded": "Age cannot exceed {max} years"
+    },
+    "status": {
+      "invalid": "Invalid status"
+    },
+    "photoUrl": {
+      "invalidUrl": "Invalid photo URL format"
+    },
+    "lotCount": {
+      "invalidType": "Lot count must be a number",
+      "int": "Lot count must be a whole number",
+      "positive": "Lot count must be positive",
+      "maxExceeded": "Lot count cannot exceed {max}",
+      "required": "Lot count is required for LOT type animals and should not be provided for INDIVIDUAL animals"
+    },
+    "animalType": {
+      "required": "Animal type is required",
+      "invalid": "Type must be either INDIVIDUAL or LOT"
+    },
+    "targetId": {
+      "required": "Target animal/lot ID is required",
+      "invalidFormat": "Invalid target ID format"
+    },
+    "targetType": {
+      "required": "Target type is required",
+      "invalid": "Target type must be either ANIMAL or LOT"
+    },
+    "eventType": {
+      "required": "Event type is required",
+      "invalid": "Invalid event type"
+    },
+    "eventDate": {
+      "required": "Event date is required",
+      "invalid": "Invalid date format"
+    },
+    "note": {
+      "maxLength": "Note cannot exceed {max} characters"
+    },
+    "cost": {
+      "invalidType": "Cost must be a number",
+      "negative": "Cost cannot be negative",
+      "maxExceeded": "Cost cannot exceed {max}",
+      "saleRequired": "Sale events must have a positive cost value"
+    },
+    "nextDueDate": {
+      "invalid": "Invalid next due date format"
+    },
+    "attachmentUrl": {
+      "invalidUrl": "Invalid attachment URL format"
+    },
+    "farmName": {
+      "required": "Farm name is required",
+      "empty": "Farm name cannot be empty",
+      "maxLength": "Farm name cannot exceed {max} characters"
+    },
+    "currency": {
+      "length": "Currency must be exactly 3 characters (e.g., TND, USD)"
+    },
+    "email": {
+      "required": "Email is required",
+      "invalid": "Invalid email address format"
+    },
+    "role": {
+      "required": "Role is required",
+      "invalid": "Invalid role selected"
+    },
+    "paidBy": {
+      "required": "Paid by user ID is required",
+      "invalidFormat": "Invalid user ID format"
+    },
+    "creditExpenseId": {
+      "required": "Credit expense ID is required",
+      "invalidFormat": "Invalid expense ID format"
+    },
+    "reimbursementAmount": {
+      "required": "Reimbursement amount is required",
+      "invalidType": "Reimbursement amount must be a number",
+      "positive": "Reimbursement amount must be positive",
+      "maxExceeded": "Reimbursement amount cannot exceed {max}"
+    }
   }
 }

@@ -14,13 +14,25 @@ export interface ApiResponse<T = any> {
     error?: string
     message?: string
     code?: string
-    details?: Array<{ field: string; message: string }>
+    details?: Array<{ field: string; message: string; code?: string }>
 }
 
 // Form validation types
 export interface ValidationError {
     field: string
     message: string
+    code?: string
+}
+
+// Enhanced error types for better error handling
+export interface ErrorContext {
+    operation?: string
+    userId?: string
+    farmId?: string
+    resourceId?: string
+    timestamp?: string
+    userAgent?: string
+    ip?: string
 }
 
 // Event payload types based on event type

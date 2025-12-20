@@ -197,12 +197,49 @@
   "errors": {
     "generic": "حدث خطأ",
     "networkError": "خطأ في الشبكة",
-    "unauthorized": "غير مخول",
-    "forbidden": "الوصول محظور",
-    "notFound": "غير موجود",
-    "serverError": "خطأ في الخادم",
-    "validationError": "خطأ في التحقق",
-    "tryAgain": "يرجى المحاولة مرة أخرى"
+    "unauthorized": "يجب أن تكون مسجل الدخول للوصول إلى هذا المورد",
+    "forbidden": "ليس لديك إذن لتنفيذ هذا الإجراء",
+    "notFound": "المورد المطلوب غير موجود",
+    "serverError": "حدث خطأ داخلي في الخادم",
+    "validationError": "البيانات المقدمة غير صحيحة",
+    "tryAgain": "يرجى المحاولة مرة أخرى",
+    "animalNotFound": "الحيوان غير موجود",
+    "farmNotFound": "المزرعة غير موجودة",
+    "eventNotFound": "الحدث غير موجود",
+    "invalidCredentials": "بريد إلكتروني أو كلمة مرور غير صحيحة",
+    "requiredField": "هذا الحقل مطلوب",
+    "invalidEmail": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+    "invalidAmount": "يجب أن يكون المبلغ رقماً موجباً",
+    "invalidDate": "يرجى إدخال تاريخ صحيح",
+    "invalidStatusTransition": "تغيير حالة غير صحيح",
+    "hasActiveEvents": "لا يمكن تغيير الحالة - الحيوان لديه أحداث قادمة",
+    "hasEvents": "لا يمكن حذف حيوان له أحداث موجودة",
+    "inactiveTarget": "لا يمكن إنشاء أحداث للحيوانات غير النشطة",
+    "futureEventNotAllowed": "لا يمكن جدولة هذا النوع من الأحداث في المستقبل",
+    "alreadyDead": "الحيوان مُعلم بالفعل كميت",
+    "alreadySold": "الحيوان مُعلم بالفعل كمباع",
+    "cannotSellDead": "لا يمكن بيع حيوان ميت",
+    "saleRequiresCost": "أحداث البيع يجب أن تحتوي على قيمة التكلفة",
+    "birthNotForLots": "أحداث الولادة لا تنطبق على الحيوانات من نوع المجموعة",
+    "birthEventExists": "الحيوان لديه بالفعل حدث ولادة مسجل",
+    "deathEventExists": "الحيوان لديه بالفعل حدث وفاة مسجل",
+    "insufficientBalance": "رصيد الصندوق غير كافي",
+    "creditExpenseNotFound": "مصروف الائتمان غير موجود",
+    "alreadyReimbursed": "مصروف الائتمان مسترد بالكامل بالفعل",
+    "exceedsRemainingDebt": "مبلغ الاسترداد يتجاوز الدين المتبقي",
+    "invalidReimbursementAmount": "يجب أن يكون مبلغ الاسترداد موجباً",
+    "memberNotFound": "العضو غير موجود في هذه المزرعة",
+    "lastOwnerRemoval": "لا يمكن إزالة المالك الأخير للمزرعة",
+    "lastOwnerRoleChange": "لا يمكن تغيير دور المالك الأخير",
+    "notALot": "عمليات العد صالحة فقط للحيوانات من نوع المجموعة",
+    "insufficientLotCount": "لا يمكن تقليل العدد - حيوانات غير كافية في المجموعة",
+    "lotCountZero": "لا يمكن تقليل عدد المجموعة إلى الصفر",
+    "exportPermissionDenied": "ليس لديك إذن لتصدير البيانات",
+    "financialExportRestricted": "يمكن لمالكي المزارع فقط تصدير البيانات المالية",
+    "duplicateResource": "هذا المورد موجود بالفعل",
+    "invalidReference": "مرجع غير صحيح لمورد مرتبط",
+    "missingRequiredField": "حقل مطلوب مفقود",
+    "checkConstraintViolation": "انتهاك قيد التحقق من صحة البيانات"
   },
   "dates": {
     "today": "اليوم",
@@ -214,5 +251,131 @@
     "weeksFromNow": "خلال {weeks} أسابيع",
     "monthsAgo": "منذ {months} أشهر",
     "monthsFromNow": "خلال {months} أشهر"
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب",
+    "invalidType": "نوع بيانات غير صحيح",
+    "stringMin": "الحد الأدنى {min} أحرف مطلوبة",
+    "stringMax": "الحد الأقصى {max} أحرف مسموح",
+    "stringEmpty": "لا يمكن أن يكون هذا الحقل فارغاً",
+    "numberMin": "يجب أن تكون القيمة على الأقل {min}",
+    "numberMax": "لا يمكن أن تتجاوز القيمة {max}",
+    "numberPositive": "يجب أن تكون القيمة رقماً موجباً",
+    "numberInt": "يجب أن تكون القيمة رقماً صحيحاً",
+    "invalidEmail": "عنوان بريد إلكتروني غير صحيح",
+    "invalidUrl": "تنسيق URL غير صحيح",
+    "invalidUuid": "تنسيق معرف غير صحيح",
+    "invalidDatetime": "تنسيق تاريخ غير صحيح",
+    "invalidEnum": "قيمة غير صالحة",
+    "amount": {
+      "required": "المبلغ مطلوب",
+      "invalidType": "يجب أن يكون المبلغ رقماً",
+      "positive": "يجب أن يكون المبلغ موجباً",
+      "maxExceeded": "لا يمكن أن يتجاوز المبلغ {max}"
+    },
+    "description": {
+      "required": "الوصف مطلوب",
+      "empty": "لا يمكن أن يكون الوصف فارغاً",
+      "maxLength": "لا يمكن أن يتجاوز الوصف {max} حرفاً"
+    },
+    "category": {
+      "required": "الفئة مطلوبة",
+      "invalid": "فئة غير صالحة محددة"
+    },
+    "species": {
+      "required": "النوع مطلوب",
+      "empty": "لا يمكن أن يكون النوع فارغاً",
+      "maxLength": "لا يمكن أن يتجاوز اسم النوع {max} حرفاً"
+    },
+    "sex": {
+      "invalid": "يجب أن يكون الجنس إما ذكر أو أنثى"
+    },
+    "birthDate": {
+      "invalid": "تنسيق تاريخ غير صحيح"
+    },
+    "estimatedAge": {
+      "invalidType": "يجب أن يكون العمر رقماً",
+      "int": "يجب أن يكون العمر رقماً صحيحاً",
+      "negative": "لا يمكن أن يكون العمر سالباً",
+      "maxExceeded": "لا يمكن أن يتجاوز العمر {max} سنة"
+    },
+    "status": {
+      "invalid": "حالة غير صالحة"
+    },
+    "photoUrl": {
+      "invalidUrl": "تنسيق URL للصورة غير صحيح"
+    },
+    "lotCount": {
+      "invalidType": "يجب أن يكون عدد المجموعة رقماً",
+      "int": "يجب أن يكون عدد المجموعة رقماً صحيحاً",
+      "positive": "يجب أن يكون عدد المجموعة موجباً",
+      "maxExceeded": "لا يمكن أن يتجاوز عدد المجموعة {max}",
+      "required": "عدد المجموعة مطلوب للحيوانات من نوع المجموعة ويجب عدم توفيره للحيوانات الفردية"
+    },
+    "animalType": {
+      "required": "نوع الحيوان مطلوب",
+      "invalid": "يجب أن يكون النوع إما فردي أو مجموعة"
+    },
+    "targetId": {
+      "required": "معرف الحيوان/المجموعة المستهدف مطلوب",
+      "invalidFormat": "تنسيق معرف مستهدف غير صحيح"
+    },
+    "targetType": {
+      "required": "نوع الهدف مطلوب",
+      "invalid": "يجب أن يكون نوع الهدف إما حيوان أو مجموعة"
+    },
+    "eventType": {
+      "required": "نوع الحدث مطلوب",
+      "invalid": "نوع حدث غير صالح"
+    },
+    "eventDate": {
+      "required": "تاريخ الحدث مطلوب",
+      "invalid": "تنسيق تاريخ غير صحيح"
+    },
+    "note": {
+      "maxLength": "لا يمكن أن تتجاوز الملاحظة {max} حرفاً"
+    },
+    "cost": {
+      "invalidType": "يجب أن تكون التكلفة رقماً",
+      "negative": "لا يمكن أن تكون التكلفة سالبة",
+      "maxExceeded": "لا يمكن أن تتجاوز التكلفة {max}",
+      "saleRequired": "أحداث البيع يجب أن يكون لها قيمة تكلفة موجبة"
+    },
+    "nextDueDate": {
+      "invalid": "تنسيق تاريخ الاستحقاق التالي غير صحيح"
+    },
+    "attachmentUrl": {
+      "invalidUrl": "تنسيق URL للمرفق غير صحيح"
+    },
+    "farmName": {
+      "required": "اسم المزرعة مطلوب",
+      "empty": "لا يمكن أن يكون اسم المزرعة فارغاً",
+      "maxLength": "لا يمكن أن يتجاوز اسم المزرعة {max} حرفاً"
+    },
+    "currency": {
+      "length": "يجب أن تكون العملة بالضبط 3 أحرف (مثل: TND، USD)"
+    },
+    "email": {
+      "required": "البريد الإلكتروني مطلوب",
+      "invalid": "تنسيق عنوان بريد إلكتروني غير صحيح"
+    },
+    "role": {
+      "required": "الدور مطلوب",
+      "invalid": "دور غير صالح محدد"
+    },
+    "paidBy": {
+      "required": "معرف المستخدم الدافع مطلوب",
+      "invalidFormat": "تنسيق معرف مستخدم غير صحيح"
+    },
+    "creditExpenseId": {
+      "required": "معرف مصروف الائتمان مطلوب",
+      "invalidFormat": "تنسيق معرف مصروف غير صحيح"
+    },
+    "reimbursementAmount": {
+      "required": "مبلغ الاسترداد مطلوب",
+      "invalidType": "يجب أن يكون مبلغ الاسترداد رقماً",
+      "positive": "يجب أن يكون مبلغ الاسترداد موجباً",
+      "maxExceeded": "لا يمكن أن يتجاوز مبلغ الاسترداد {max}"
+    }
   }
 }

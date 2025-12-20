@@ -197,12 +197,49 @@
   "errors": {
     "generic": "Une erreur s'est produite",
     "networkError": "Erreur de réseau",
-    "unauthorized": "Non autorisé",
-    "forbidden": "Accès interdit",
-    "notFound": "Non trouvé",
-    "serverError": "Erreur du serveur",
-    "validationError": "Erreur de validation",
-    "tryAgain": "Veuillez réessayer"
+    "unauthorized": "Vous devez être connecté pour accéder à cette ressource",
+    "forbidden": "Vous n'avez pas la permission d'effectuer cette action",
+    "notFound": "La ressource demandée n'a pas été trouvée",
+    "serverError": "Une erreur interne du serveur s'est produite",
+    "validationError": "Les données fournies sont invalides",
+    "tryAgain": "Veuillez réessayer",
+    "animalNotFound": "Animal non trouvé",
+    "farmNotFound": "Ferme non trouvée",
+    "eventNotFound": "Événement non trouvé",
+    "invalidCredentials": "Email ou mot de passe invalide",
+    "requiredField": "Ce champ est requis",
+    "invalidEmail": "Veuillez saisir une adresse email valide",
+    "invalidAmount": "Le montant doit être un nombre positif",
+    "invalidDate": "Veuillez saisir une date valide",
+    "invalidStatusTransition": "Changement de statut invalide",
+    "hasActiveEvents": "Impossible de changer le statut - l'animal a des événements à venir",
+    "hasEvents": "Impossible de supprimer un animal avec des événements existants",
+    "inactiveTarget": "Impossible de créer des événements pour des animaux inactifs",
+    "futureEventNotAllowed": "Ce type d'événement ne peut pas être programmé dans le futur",
+    "alreadyDead": "L'animal est déjà marqué comme décédé",
+    "alreadySold": "L'animal est déjà marqué comme vendu",
+    "cannotSellDead": "Impossible de vendre un animal mort",
+    "saleRequiresCost": "Les événements de vente doivent avoir une valeur de coût",
+    "birthNotForLots": "Les événements de naissance ne s'appliquent pas aux animaux de type lot",
+    "birthEventExists": "L'animal a déjà un événement de naissance enregistré",
+    "deathEventExists": "L'animal a déjà un événement de décès enregistré",
+    "insufficientBalance": "Solde de caisse insuffisant",
+    "creditExpenseNotFound": "Dépense à crédit non trouvée",
+    "alreadyReimbursed": "La dépense à crédit est déjà entièrement remboursée",
+    "exceedsRemainingDebt": "Le montant du remboursement dépasse la dette restante",
+    "invalidReimbursementAmount": "Le montant du remboursement doit être positif",
+    "memberNotFound": "Membre non trouvé dans cette ferme",
+    "lastOwnerRemoval": "Impossible de supprimer le dernier propriétaire de la ferme",
+    "lastOwnerRoleChange": "Impossible de changer le rôle du dernier propriétaire",
+    "notALot": "Les opérations de comptage ne sont valides que pour les animaux de type lot",
+    "insufficientLotCount": "Impossible de diminuer le nombre - animaux insuffisants dans le lot",
+    "lotCountZero": "Impossible de réduire le nombre du lot à zéro",
+    "exportPermissionDenied": "Vous n'avez pas la permission d'exporter des données",
+    "financialExportRestricted": "Seuls les propriétaires de ferme peuvent exporter les données financières",
+    "duplicateResource": "Cette ressource existe déjà",
+    "invalidReference": "Référence invalide à une ressource liée",
+    "missingRequiredField": "Champ requis manquant",
+    "checkConstraintViolation": "Contrainte de validation des données violée"
   },
   "dates": {
     "today": "Aujourd'hui",
@@ -214,5 +251,131 @@
     "weeksFromNow": "Dans {weeks} semaines",
     "monthsAgo": "Il y a {months} mois",
     "monthsFromNow": "Dans {months} mois"
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "invalidType": "Type de donnée invalide",
+    "stringMin": "Minimum {min} caractères requis",
+    "stringMax": "Maximum {max} caractères autorisés",
+    "stringEmpty": "Ce champ ne peut pas être vide",
+    "numberMin": "La valeur doit être au moins {min}",
+    "numberMax": "La valeur ne peut pas dépasser {max}",
+    "numberPositive": "La valeur doit être un nombre positif",
+    "numberInt": "La valeur doit être un nombre entier",
+    "invalidEmail": "Adresse email invalide",
+    "invalidUrl": "Format d'URL invalide",
+    "invalidUuid": "Format d'identifiant invalide",
+    "invalidDatetime": "Format de date invalide",
+    "invalidEnum": "Valeur non autorisée",
+    "amount": {
+      "required": "Le montant est requis",
+      "invalidType": "Le montant doit être un nombre",
+      "positive": "Le montant doit être positif",
+      "maxExceeded": "Le montant ne peut pas dépasser {max}"
+    },
+    "description": {
+      "required": "La description est requise",
+      "empty": "La description ne peut pas être vide",
+      "maxLength": "La description ne peut pas dépasser {max} caractères"
+    },
+    "category": {
+      "required": "La catégorie est requise",
+      "invalid": "Catégorie invalide sélectionnée"
+    },
+    "species": {
+      "required": "L'espèce est requise",
+      "empty": "L'espèce ne peut pas être vide",
+      "maxLength": "Le nom de l'espèce ne peut pas dépasser {max} caractères"
+    },
+    "sex": {
+      "invalid": "Le sexe doit être MALE ou FEMALE"
+    },
+    "birthDate": {
+      "invalid": "Format de date invalide"
+    },
+    "estimatedAge": {
+      "invalidType": "L'âge doit être un nombre",
+      "int": "L'âge doit être un nombre entier",
+      "negative": "L'âge ne peut pas être négatif",
+      "maxExceeded": "L'âge ne peut pas dépasser {max} ans"
+    },
+    "status": {
+      "invalid": "Statut invalide"
+    },
+    "photoUrl": {
+      "invalidUrl": "Format d'URL de photo invalide"
+    },
+    "lotCount": {
+      "invalidType": "Le nombre du lot doit être un nombre",
+      "int": "Le nombre du lot doit être un nombre entier",
+      "positive": "Le nombre du lot doit être positif",
+      "maxExceeded": "Le nombre du lot ne peut pas dépasser {max}",
+      "required": "Le nombre du lot est requis pour les animaux de type LOT et ne doit pas être fourni pour les animaux INDIVIDUELS"
+    },
+    "animalType": {
+      "required": "Le type d'animal est requis",
+      "invalid": "Le type doit être INDIVIDUAL ou LOT"
+    },
+    "targetId": {
+      "required": "L'identifiant de l'animal/lot cible est requis",
+      "invalidFormat": "Format d'identifiant cible invalide"
+    },
+    "targetType": {
+      "required": "Le type de cible est requis",
+      "invalid": "Le type de cible doit être ANIMAL ou LOT"
+    },
+    "eventType": {
+      "required": "Le type d'événement est requis",
+      "invalid": "Type d'événement invalide"
+    },
+    "eventDate": {
+      "required": "La date de l'événement est requise",
+      "invalid": "Format de date invalide"
+    },
+    "note": {
+      "maxLength": "La note ne peut pas dépasser {max} caractères"
+    },
+    "cost": {
+      "invalidType": "Le coût doit être un nombre",
+      "negative": "Le coût ne peut pas être négatif",
+      "maxExceeded": "Le coût ne peut pas dépasser {max}",
+      "saleRequired": "Les événements de vente doivent avoir une valeur de coût positive"
+    },
+    "nextDueDate": {
+      "invalid": "Format de date de prochaine échéance invalide"
+    },
+    "attachmentUrl": {
+      "invalidUrl": "Format d'URL de pièce jointe invalide"
+    },
+    "farmName": {
+      "required": "Le nom de la ferme est requis",
+      "empty": "Le nom de la ferme ne peut pas être vide",
+      "maxLength": "Le nom de la ferme ne peut pas dépasser {max} caractères"
+    },
+    "currency": {
+      "length": "La devise doit comporter exactement 3 caractères (ex: TND, USD)"
+    },
+    "email": {
+      "required": "L'email est requis",
+      "invalid": "Format d'adresse email invalide"
+    },
+    "role": {
+      "required": "Le rôle est requis",
+      "invalid": "Rôle invalide sélectionné"
+    },
+    "paidBy": {
+      "required": "L'identifiant de l'utilisateur payeur est requis",
+      "invalidFormat": "Format d'identifiant utilisateur invalide"
+    },
+    "creditExpenseId": {
+      "required": "L'identifiant de dépense à crédit est requis",
+      "invalidFormat": "Format d'identifiant de dépense invalide"
+    },
+    "reimbursementAmount": {
+      "required": "Le montant du remboursement est requis",
+      "invalidType": "Le montant du remboursement doit être un nombre",
+      "positive": "Le montant du remboursement doit être positif",
+      "maxExceeded": "Le montant du remboursement ne peut pas dépasser {max}"
+    }
   }
 }
