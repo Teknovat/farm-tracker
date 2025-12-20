@@ -1,6 +1,6 @@
 import { db, animals } from '@/lib/db'
 import { BaseRepository } from './base'
-import { eq, and, isNull, like, inArray } from 'drizzle-orm'
+import { eq, and, isNull, like, inArray, count } from 'drizzle-orm'
 
 export interface Animal {
     id: string
@@ -113,11 +113,11 @@ export class AnimalRepository extends BaseRepository<Animal> {
         }
 
         const result = await db
-            .select({ count: animals.id })
+            .select({ count: count() })
             .from(animals)
             .where(and(...conditions))
 
-        return result.length
+        return Number(result[0]?.count ?? 0)
     }
 
     async validateAnimalData(data: CreateAnimalData): Promise<string[]> {

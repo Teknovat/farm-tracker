@@ -214,7 +214,7 @@ export class FarmRepository extends BaseRepository<Farm> {
                 eq(farmMembers.status, 'ACTIVE')
             ))
 
-        return result.changes > 0
+        return result.rowsAffected > 0
     }
 
     // Override update method to include audit trail

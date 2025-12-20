@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { FarmRepository } from '@/lib/repositories/farm'
 import { getServerAuth } from '@/lib/auth/server'
+import { createSession } from '@/lib/auth/session'
 import { ApiResponse } from '@/lib/types'
 
 export async function GET(request: NextRequest) {
@@ -56,6 +57,9 @@ export async function POST(request: NextRequest) {
             timezone: timezone || 'Africa/Tunis',
             createdBy: auth.user.id
         })
+
+        // Update session with new farm
+        await createSession(auth.user.id, result.farm.id, 'OWNER')
 
         return NextResponse.json({
             success: true,

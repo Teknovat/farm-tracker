@@ -251,6 +251,23 @@
     "monthsAgo": "{months} months ago",
     "monthsFromNow": "In {months} months"
   },
+  "onboarding": {
+    "welcome": "Welcome",
+    "welcomeMessage": "Welcome",
+    "getStarted": "Let's start by setting up your farm",
+    "createFarm": "Create Farm",
+    "joinFarm": "Join Farm",
+    "createNewFarm": "Create a new farm",
+    "joinExistingFarm": "Join an existing farm",
+    "createFarmDescription": "Give your farm a name to get started",
+    "farmName": "Farm Name",
+    "farmNamePlaceholder": "e.g., Green Valley Farm",
+    "farmNameRequired": "Farm name is required",
+    "farmNameTooShort": "Name must be at least 3 characters",
+    "createFarmButton": "Create My Farm",
+    "noInvitations": "No Invitations",
+    "checkEmail": "Ask a farm owner to send you an invitation by email"
+  },
   "validation": {
     "required": "This field is required",
     "invalidType": "Invalid data type",

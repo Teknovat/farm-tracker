@@ -252,6 +252,23 @@
     "monthsAgo": "منذ {months} أشهر",
     "monthsFromNow": "خلال {months} أشهر"
   },
+  "onboarding": {
+    "welcome": "مرحباً",
+    "welcomeMessage": "مرحباً",
+    "getStarted": "لنبدأ بإعداد مزرعتك",
+    "createFarm": "إنشاء مزرعة",
+    "joinFarm": "الانضمام إلى مزرعة",
+    "createNewFarm": "إنشاء مزرعة جديدة",
+    "joinExistingFarm": "الانضمام إلى مزرعة موجودة",
+    "createFarmDescription": "أعط مزرعتك اسماً للبدء",
+    "farmName": "اسم المزرعة",
+    "farmNamePlaceholder": "مثال: مزرعة الوادي الأخضر",
+    "farmNameRequired": "اسم المزرعة مطلوب",
+    "farmNameTooShort": "يجب أن يكون الاسم 3 أحرف على الأقل",
+    "createFarmButton": "إنشاء مزرعتي",
+    "noInvitations": "لا توجد دعوات",
+    "checkEmail": "اطلب من مالك المزرعة إرسال دعوة لك عبر البريد الإلكتروني"
+  },
   "validation": {
     "required": "هذا الحقل مطلوب",
     "invalidType": "نوع بيانات غير صحيح",

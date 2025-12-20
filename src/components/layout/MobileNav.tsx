@@ -24,11 +24,17 @@ export function MobileNav() {
   const pathname = usePathname();
   const t = useTranslations("navigation");
 
+  const isActive = (href: string) => {
+    // Remove locale prefix from pathname for comparison
+    const pathWithoutLocale = pathname.replace(/^\/(fr|en|ar)/, "");
+    return pathWithoutLocale === href || pathWithoutLocale.startsWith(href + "/");
+  };
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
       <div className="flex justify-around items-center py-2">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const active = isActive(item.href);
           return (
             <Link
               key={item.href}
@@ -38,8 +44,8 @@ export function MobileNav() {
                 "text-xs font-medium transition-colors",
                 "min-h-[56px]", // Large touch target
                 {
-                  "text-blue-600": isActive,
-                  "text-gray-600 hover:text-gray-900": !isActive,
+                  "text-blue-600": active,
+                  "text-gray-600 hover:text-gray-900": !active,
                 }
               )}
             >

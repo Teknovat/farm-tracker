@@ -88,7 +88,7 @@ export default function RegisterPage() {
       const result = await register(email, name.trim(), password);
 
       if (result.success) {
-        router.push("/dashboard");
+        router.push("/onboarding");
       } else {
         setError(result.error || tErrors("generic"));
       }

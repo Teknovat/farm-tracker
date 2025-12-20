@@ -252,6 +252,23 @@
     "monthsAgo": "Il y a {months} mois",
     "monthsFromNow": "Dans {months} mois"
   },
+  "onboarding": {
+    "welcome": "Bienvenue",
+    "welcomeMessage": "Bienvenue",
+    "getStarted": "Commençons par configurer votre ferme",
+    "createFarm": "Créer une ferme",
+    "joinFarm": "Rejoindre une ferme",
+    "createNewFarm": "Créer une nouvelle ferme",
+    "joinExistingFarm": "Rejoindre une ferme existante",
+    "createFarmDescription": "Donnez un nom à votre ferme pour commencer",
+    "farmName": "Nom de la ferme",
+    "farmNamePlaceholder": "Ex: Ferme Ben Ali",
+    "farmNameRequired": "Le nom de la ferme est requis",
+    "farmNameTooShort": "Le nom doit contenir au moins 3 caractères",
+    "createFarmButton": "Créer ma ferme",
+    "noInvitations": "Aucune invitation",
+    "checkEmail": "Demandez à un propriétaire de ferme de vous envoyer une invitation par email"
+  },
   "validation": {
     "required": "Ce champ est requis",
     "invalidType": "Type de donnée invalide",

@@ -111,7 +111,7 @@ export abstract class BaseRepository<T extends Record<string, any>> {
             .set({ deletedAt: new Date() })
             .where(and(...conditions))
 
-        return result.changes > 0
+        return result.rowsAffected > 0
     }
 
     async hardDelete(id: string): Promise<boolean> {
@@ -119,6 +119,6 @@ export abstract class BaseRepository<T extends Record<string, any>> {
             .delete(this.table)
             .where(eq(this.table.id, id))
 
-        return result.changes > 0
+        return result.rowsAffected > 0
     }
 }

@@ -75,6 +75,6 @@ export class UserRepository {
             .delete(users)
             .where(eq(users.id, id))
 
-        return result.changes > 0
+        return result.rowsAffected > 0
     }
 }
