@@ -7,6 +7,8 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { useAuth } from "@/lib/auth/context";
 
 const categoryOptions = [
   { value: "", label: "Select category" },
@@ -25,8 +27,9 @@ const paymentTypeOptions = [
   { value: "CREDIT", label: "Credit (paid by member)" },
 ];
 
-export default function ExpensePage() {
+function ExpenseContent() {
   const router = useRouter();
+  const { farm } = useAuth();
 
   const [formData, setFormData] = useState({
     amount: "",
@@ -37,22 +40,42 @@ export default function ExpensePage() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!farm) return;
+
     setIsSubmitting(true);
+    setError("");
 
     try {
-      // TODO: Submit to API
-      console.log("Submitting expense:", formData);
+      const expenseData = {
+        amount: parseFloat(formData.amount),
+        description: formData.description,
+        category: formData.category,
+        paymentType: formData.paymentType,
+        date: formData.date,
+      };
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(`/api/farms/${farm.id}/cashbox/expense`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(expenseData),
+      });
 
-      // Navigate back to cashbox
-      router.push("/cashbox");
+      const data = await response.json();
+
+      if (data.success) {
+        router.push("/cashbox");
+      } else {
+        setError(data.error || "Failed to add expense");
+      }
     } catch (error) {
       console.error("Error creating expense:", error);
+      setError("Network error. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -78,6 +101,12 @@ export default function ExpensePage() {
   return (
     <MobileLayout title="Add Expense" showBack onBack={() => router.back()}>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            {error}
+          </div>
+        )}
+
         <Card>
           <div className="space-y-4">
             <Input
@@ -171,5 +200,13 @@ export default function ExpensePage() {
         </div>
       </form>
     </MobileLayout>
+  );
+}
+
+export default function ExpensePage() {
+  return (
+    <ProtectedRoute>
+      <ExpenseContent />
+    </ProtectedRoute>
   );
 }

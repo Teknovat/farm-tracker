@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { MobileLayout } from "@/components/layout/MobileLayout";
@@ -8,12 +8,20 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { useAuth } from "@/lib/auth/context";
 
 function NewEventForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations();
+  const { farm } = useAuth();
   const preselectedAnimalId = searchParams.get("animalId");
+
+  const [animals, setAnimals] = useState<Array<{ value: string; label: string }>>([
+    { value: "", label: t("forms.selectAnimal") },
+  ]);
+  const [isLoadingAnimals, setIsLoadingAnimals] = useState(true);
 
   const eventTypeOptions = [
     { value: "", label: t("forms.selectOption") },
@@ -24,13 +32,6 @@ function NewEventForm() {
     { value: "SALE", label: t("events.sale") },
     { value: "DEATH", label: t("events.death") },
     { value: "NOTE", label: t("events.note") },
-  ];
-
-  const animalOptions = [
-    { value: "", label: t("forms.selectAnimal") },
-    { value: "1", label: "Cow #1" },
-    { value: "2", label: "Sheep Lot A" },
-    { value: "3", label: "Goat #3" },
   ];
 
   const categoryOptions = [
@@ -55,22 +56,76 @@ function NewEventForm() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (farm) {
+      fetchAnimals();
+    }
+  }, [farm]);
+
+  const fetchAnimals = async () => {
+    if (!farm) return;
+
+    setIsLoadingAnimals(true);
+    try {
+      const response = await fetch(`/api/farms/${farm.id}/animals?status=ACTIVE`);
+      const data = await response.json();
+
+      if (data.success) {
+        const animalOptions = [
+          { value: "", label: t("forms.selectAnimal") },
+          ...data.data.map((animal: any) => ({
+            value: animal.id,
+            label: `${animal.species} #${animal.id.slice(0, 8)}${animal.type === "LOT" ? ` (${animal.lotCount} animals)` : ""}`,
+          })),
+        ];
+        setAnimals(animalOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching animals:", error);
+    } finally {
+      setIsLoadingAnimals(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!farm) return;
+
     setIsSubmitting(true);
+    setError("");
 
     try {
-      // TODO: Submit to API
-      console.log("Submitting event:", formData);
+      const eventData = {
+        targetId: formData.animalId,
+        targetType: "ANIMAL",
+        eventType: formData.eventType,
+        eventDate: formData.eventDate,
+        note: formData.note || undefined,
+        cost: formData.cost ? parseFloat(formData.cost) : undefined,
+        nextDueDate: formData.nextDueDate || undefined,
+        category: formData.category || undefined,
+      };
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(`/api/farms/${farm.id}/events`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(eventData),
+      });
 
-      // Navigate back or to success page
-      router.push("/events");
+      const data = await response.json();
+
+      if (data.success) {
+        router.push("/events");
+      } else {
+        setError(data.error || "Failed to create event");
+      }
     } catch (error) {
       console.error("Error creating event:", error);
+      setError("Network error. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -83,15 +138,22 @@ function NewEventForm() {
   return (
     <MobileLayout title={t("events.recordEvent")} showBack onBack={() => router.back()}>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            {error}
+          </div>
+        )}
+
         <Card>
           <div className="space-y-4">
             <Select
               label={`${t("events.targetAnimal")} *`}
-              options={animalOptions}
+              options={animals}
               value={formData.animalId}
               onChange={(e) => handleChange("animalId", e.target.value)}
               fullWidth
               required
+              disabled={isLoadingAnimals}
             />
 
             <Select
@@ -173,16 +235,18 @@ export default function NewEventPage() {
   const t = useTranslations();
 
   return (
-    <Suspense
-      fallback={
-        <MobileLayout title={t("events.recordEvent")}>
-          <div className="flex items-center justify-center py-8">
-            <div className="text-gray-500">{t("common.loading")}</div>
-          </div>
-        </MobileLayout>
-      }
-    >
-      <NewEventForm />
-    </Suspense>
+    <ProtectedRoute>
+      <Suspense
+        fallback={
+          <MobileLayout title={t("events.recordEvent")}>
+            <div className="flex items-center justify-center py-8">
+              <div className="text-gray-500">{t("common.loading")}</div>
+            </div>
+          </MobileLayout>
+        }
+      >
+        <NewEventForm />
+      </Suspense>
+    </ProtectedRoute>
   );
 }
