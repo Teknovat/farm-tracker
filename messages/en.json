@@ -74,6 +74,13 @@
     "animalCreated": "Animal created successfully",
     "animalUpdated": "Animal updated successfully",
     "animalDeleted": "Animal deleted successfully",
+    "species": {
+      "cow": "Cow",
+      "sheep": "Sheep",
+      "goat": "Goat",
+      "chicken": "Chicken",
+      "other": "Other"
+    },
     "addEvent": "Add Event"
   },
   "events": {

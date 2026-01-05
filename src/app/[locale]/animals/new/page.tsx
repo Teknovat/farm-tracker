@@ -11,37 +11,40 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/lib/auth/context";
 import { useTranslations } from "next-intl";
 
-const typeOptions = [
-  { value: "", label: "Select type" },
-  { value: "INDIVIDUAL", label: "Individual Animal" },
-  { value: "LOT", label: "Lot/Group" },
-];
-
-const speciesOptions = [
-  { value: "", label: "Select species" },
-  { value: "Cow", label: "Cow" },
-  { value: "Sheep", label: "Sheep" },
-  { value: "Goat", label: "Goat" },
-  { value: "Chicken", label: "Chicken" },
-  { value: "Other", label: "Other" },
-];
-
-const sexOptions = [
-  { value: "", label: "Select sex" },
-  { value: "MALE", label: "Male" },
-  { value: "FEMALE", label: "Female" },
-];
-
-const statusOptions = [
-  { value: "ACTIVE", label: "Active" },
-  { value: "SOLD", label: "Sold" },
-  { value: "DEAD", label: "Dead" },
-];
-
 function NewAnimalContent() {
   const router = useRouter();
   const { farm } = useAuth();
   const t = useTranslations("animals");
+  const tCommon = useTranslations("common");
+  const tForms = useTranslations("forms");
+
+  // Dynamic options using translations
+  const typeOptions = [
+    { value: "", label: tForms("selectOption") },
+    { value: "INDIVIDUAL", label: t("individual") },
+    { value: "LOT", label: t("lot") },
+  ];
+
+  const speciesOptions = [
+    { value: "", label: tForms("selectOption") },
+    { value: "Cow", label: t("species.cow") },
+    { value: "Sheep", label: t("species.sheep") },
+    { value: "Goat", label: t("species.goat") },
+    { value: "Chicken", label: t("species.chicken") },
+    { value: "Other", label: t("species.other") },
+  ];
+
+  const sexOptions = [
+    { value: "", label: tForms("selectOption") },
+    { value: "MALE", label: t("male") },
+    { value: "FEMALE", label: t("female") },
+  ];
+
+  const statusOptions = [
+    { value: "ACTIVE", label: t("active") },
+    { value: "SOLD", label: t("sold") },
+    { value: "DEAD", label: t("dead") },
+  ];
 
   const [formData, setFormData] = useState({
     type: "",
@@ -88,11 +91,11 @@ function NewAnimalContent() {
       if (data.success) {
         router.push("/animals");
       } else {
-        setError(data.error || "Failed to create animal");
+        setError(data.error || t("animalCreated")); // This should be an error message
       }
     } catch (error) {
       console.error("Error creating animal:", error);
-      setError("Network error. Please try again.");
+      setError("Erreur réseau. Veuillez réessayer.");
     } finally {
       setIsSubmitting(false);
     }
@@ -107,18 +110,14 @@ function NewAnimalContent() {
   const isCustomSpecies = formData.species === "Other";
 
   return (
-    <MobileLayout title="Add Animal" showBack onBack={() => router.back()}>
+    <MobileLayout title={t("addAnimal")} showBack onBack={() => router.back()}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-            {error}
-          </div>
-        )}
+        {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">{error}</div>}
 
         <Card>
           <div className="space-y-4">
             <Select
-              label="Type *"
+              label={`${t("type")} *`}
               options={typeOptions}
               value={formData.type}
               onChange={(e) => handleChange("type", e.target.value)}
@@ -127,7 +126,7 @@ function NewAnimalContent() {
             />
 
             <Select
-              label="Species *"
+              label={`${t("species")} *`}
               options={speciesOptions}
               value={formData.species}
               onChange={(e) => handleChange("species", e.target.value)}
@@ -137,8 +136,8 @@ function NewAnimalContent() {
 
             {isCustomSpecies && (
               <Input
-                label="Custom Species *"
-                placeholder="Enter species name"
+                label={`${t("species")} personnalisée *`}
+                placeholder="Saisir le nom de l'espèce"
                 value={formData.customSpecies}
                 onChange={(e) => handleChange("customSpecies", e.target.value)}
                 fullWidth
@@ -147,7 +146,7 @@ function NewAnimalContent() {
             )}
 
             <Select
-              label="Status *"
+              label={`${t("status")} *`}
               options={statusOptions}
               value={formData.status}
               onChange={(e) => handleChange("status", e.target.value)}
@@ -160,10 +159,10 @@ function NewAnimalContent() {
         {/* Individual Animal Fields */}
         {isIndividual && (
           <Card>
-            <h3 className="font-medium text-gray-900 mb-4">Individual Animal Details</h3>
+            <h3 className="font-medium text-gray-900 mb-4">Détails de l'animal individuel</h3>
             <div className="space-y-4">
               <Select
-                label="Sex"
+                label={t("sex")}
                 options={sexOptions}
                 value={formData.sex}
                 onChange={(e) => handleChange("sex", e.target.value)}
@@ -171,7 +170,7 @@ function NewAnimalContent() {
               />
 
               <Input
-                label="Birth Date"
+                label={t("birthDate")}
                 type="date"
                 value={formData.birthDate}
                 onChange={(e) => handleChange("birthDate", e.target.value)}
@@ -179,9 +178,9 @@ function NewAnimalContent() {
               />
 
               <Input
-                label="Estimated Age (months)"
+                label={`${t("estimatedAge")} (mois)`}
                 type="number"
-                placeholder="e.g., 24"
+                placeholder="ex: 24"
                 value={formData.estimatedAge}
                 onChange={(e) => handleChange("estimatedAge", e.target.value)}
                 fullWidth
@@ -193,12 +192,12 @@ function NewAnimalContent() {
         {/* Lot Fields */}
         {isLot && (
           <Card>
-            <h3 className="font-medium text-gray-900 mb-4">Lot Details</h3>
+            <h3 className="font-medium text-gray-900 mb-4">Détails du lot</h3>
             <div className="space-y-4">
               <Input
-                label="Number of Animals *"
+                label={`${t("lotCount")} *`}
                 type="number"
-                placeholder="e.g., 25"
+                placeholder="ex: 25"
                 value={formData.lotCount}
                 onChange={(e) => handleChange("lotCount", e.target.value)}
                 fullWidth
@@ -212,17 +211,33 @@ function NewAnimalContent() {
         {formData.type && formData.species && (
           <Card>
             <div className="bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-medium text-blue-900 mb-2">Animal Preview</h3>
+              <h3 className="font-medium text-blue-900 mb-2">Aperçu de l'animal</h3>
               <div className="space-y-1 text-sm text-blue-800">
-                <div>Type: {typeOptions.find((t) => t.value === formData.type)?.label}</div>
-                <div>Species: {isCustomSpecies ? formData.customSpecies : formData.species}</div>
-                <div>Status: {formData.status}</div>
-                {isIndividual && formData.sex && <div>Sex: {formData.sex}</div>}
-                {isIndividual && formData.birthDate && (
-                  <div>Birth Date: {new Date(formData.birthDate).toLocaleDateString()}</div>
+                <div>
+                  {t("type")}: {typeOptions.find((t) => t.value === formData.type)?.label}
+                </div>
+                <div>
+                  {t("species")}: {isCustomSpecies ? formData.customSpecies : formData.species}
+                </div>
+                <div>
+                  {t("status")}: {statusOptions.find((s) => s.value === formData.status)?.label}
+                </div>
+                {isIndividual && formData.sex && (
+                  <div>
+                    {t("sex")}: {sexOptions.find((s) => s.value === formData.sex)?.label}
+                  </div>
                 )}
-                {isIndividual && formData.estimatedAge && <div>Estimated Age: {formData.estimatedAge} months</div>}
-                {isLot && formData.lotCount && <div>Lot Size: {formData.lotCount} animals</div>}
+                {isIndividual && formData.birthDate && (
+                  <div>
+                    {t("birthDate")}: {new Date(formData.birthDate).toLocaleDateString("fr-FR")}
+                  </div>
+                )}
+                {isIndividual && formData.estimatedAge && (
+                  <div>
+                    {t("estimatedAge")}: {formData.estimatedAge} mois
+                  </div>
+                )}
+                {isLot && formData.lotCount && <div>Taille du lot: {formData.lotCount} animaux</div>}
               </div>
             </div>
           </Card>
@@ -241,7 +256,7 @@ function NewAnimalContent() {
               (isLot && !formData.lotCount)
             }
           >
-            {isSubmitting ? "Adding Animal..." : "Add Animal"}
+            {isSubmitting ? "Ajout en cours..." : t("addAnimal")}
           </Button>
         </div>
       </form>

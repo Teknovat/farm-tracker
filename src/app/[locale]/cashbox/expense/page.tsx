@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { MobileLayout } from "@/components/layout/MobileLayout";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -10,26 +11,29 @@ import { Select } from "@/components/ui/Select";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/lib/auth/context";
 
-const categoryOptions = [
-  { value: "", label: "Select category" },
-  { value: "FEED", label: "Feed" },
-  { value: "VET", label: "Veterinary" },
-  { value: "LABOR", label: "Labor" },
-  { value: "TRANSPORT", label: "Transport" },
-  { value: "EQUIPMENT", label: "Equipment" },
-  { value: "UTILITIES", label: "Utilities" },
-  { value: "OTHER", label: "Other" },
-];
-
-const paymentTypeOptions = [
-  { value: "", label: "Select payment type" },
-  { value: "CASH", label: "Cash (from cashbox)" },
-  { value: "CREDIT", label: "Credit (paid by member)" },
-];
-
 function ExpenseContent() {
   const router = useRouter();
   const { farm } = useAuth();
+  const t = useTranslations("cashbox");
+  const tCommon = useTranslations("common");
+  const tForms = useTranslations("forms");
+
+  const categoryOptions = [
+    { value: "", label: tForms("selectOption") },
+    { value: "FEED", label: t("categories.feed") },
+    { value: "VET", label: t("categories.vet") },
+    { value: "LABOR", label: t("categories.labor") },
+    { value: "TRANSPORT", label: t("categories.transport") },
+    { value: "EQUIPMENT", label: t("categories.equipment") },
+    { value: "UTILITIES", label: t("categories.utilities") },
+    { value: "OTHER", label: t("categories.other") },
+  ];
+
+  const paymentTypeOptions = [
+    { value: "", label: "Sélectionner le type de paiement" },
+    { value: "CASH", label: "Espèces (de la caisse)" },
+    { value: "CREDIT", label: "Crédit (payé par un membre)" },
+  ];
 
   const [formData, setFormData] = useState({
     amount: "",
@@ -71,11 +75,11 @@ function ExpenseContent() {
       if (data.success) {
         router.push("/cashbox");
       } else {
-        setError(data.error || "Failed to add expense");
+        setError(data.error || "Échec de l'ajout de la dépense");
       }
     } catch (error) {
       console.error("Error creating expense:", error);
-      setError("Network error. Please try again.");
+      setError("Erreur réseau. Veuillez réessayer.");
     } finally {
       setIsSubmitting(false);
     }
@@ -91,26 +95,22 @@ function ExpenseContent() {
 
   const getPreviewText = () => {
     if (formData.paymentType === "CASH") {
-      return "This will decrease the cashbox balance";
+      return "Ceci diminuera le solde de la caisse";
     } else if (formData.paymentType === "CREDIT") {
-      return "This will create internal debt (no cashbox impact)";
+      return "Ceci créera une dette interne (aucun impact sur la caisse)";
     }
     return "";
   };
 
   return (
-    <MobileLayout title="Add Expense" showBack onBack={() => router.back()}>
+    <MobileLayout title={t("addExpense")} showBack onBack={() => router.back()}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-            {error}
-          </div>
-        )}
+        {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">{error}</div>}
 
         <Card>
           <div className="space-y-4">
             <Input
-              label="Amount (TND) *"
+              label={`${t("amount")} (TND) *`}
               type="number"
               step="0.01"
               placeholder="0.00"
@@ -121,8 +121,8 @@ function ExpenseContent() {
             />
 
             <Input
-              label="Description *"
-              placeholder="e.g., Feed purchase, Veterinary visit"
+              label={`${t("description")} *`}
+              placeholder="ex: Achat d'aliments, Visite vétérinaire"
               value={formData.description}
               onChange={(e) => handleChange("description", e.target.value)}
               fullWidth
@@ -130,7 +130,7 @@ function ExpenseContent() {
             />
 
             <Select
-              label="Category *"
+              label={`${t("category")} *`}
               options={categoryOptions}
               value={formData.category}
               onChange={(e) => handleChange("category", e.target.value)}
@@ -139,7 +139,7 @@ function ExpenseContent() {
             />
 
             <Select
-              label="Payment Type *"
+              label={`${t("expenseType")} *`}
               options={paymentTypeOptions}
               value={formData.paymentType}
               onChange={(e) => handleChange("paymentType", e.target.value)}
@@ -163,7 +163,7 @@ function ExpenseContent() {
           <Card>
             <div className={`p-4 rounded-lg ${getPreviewColor()}`}>
               <h3 className="font-medium mb-2">
-                {formData.paymentType === "CASH" ? "Cash Payment" : "Credit Payment"}
+                {formData.paymentType === "CASH" ? "Paiement en espèces" : "Paiement à crédit"}
               </h3>
               <p className="text-sm">{getPreviewText()}</p>
             </div>
@@ -174,13 +174,19 @@ function ExpenseContent() {
         {formData.amount && formData.description && formData.category && formData.paymentType && (
           <Card>
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-medium text-gray-900 mb-2">Expense Preview</h3>
+              <h3 className="font-medium text-gray-900 mb-2">Aperçu de la dépense</h3>
               <div className="space-y-1 text-sm text-gray-700">
-                <div>Amount: {parseFloat(formData.amount || "0").toFixed(2)} TND</div>
-                <div>Description: {formData.description}</div>
-                <div>Category: {categoryOptions.find((c) => c.value === formData.category)?.label}</div>
-                <div>Payment: {paymentTypeOptions.find((p) => p.value === formData.paymentType)?.label}</div>
-                <div>Date: {new Date(formData.date).toLocaleDateString()}</div>
+                <div>
+                  {t("amount")}: {parseFloat(formData.amount || "0").toFixed(2)} TND
+                </div>
+                <div>
+                  {t("description")}: {formData.description}
+                </div>
+                <div>
+                  {t("category")}: {categoryOptions.find((c) => c.value === formData.category)?.label}
+                </div>
+                <div>Paiement: {paymentTypeOptions.find((p) => p.value === formData.paymentType)?.label}</div>
+                <div>Date: {new Date(formData.date).toLocaleDateString("fr-FR")}</div>
               </div>
             </div>
           </Card>
@@ -195,7 +201,7 @@ function ExpenseContent() {
               isSubmitting || !formData.amount || !formData.description || !formData.category || !formData.paymentType
             }
           >
-            {isSubmitting ? "Adding Expense..." : "Add Expense"}
+            {isSubmitting ? "Ajout en cours..." : t("addExpense")}
           </Button>
         </div>
       </form>

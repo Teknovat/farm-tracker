@@ -75,6 +75,13 @@
     "animalCreated": "تم إنشاء الحيوان بنجاح",
     "animalUpdated": "تم تحديث الحيوان بنجاح",
     "animalDeleted": "تم حذف الحيوان بنجاح",
+    "species": {
+      "cow": "بقرة",
+      "sheep": "خروف",
+      "goat": "ماعز",
+      "chicken": "دجاج",
+      "other": "أخرى"
+    },
     "addEvent": "إضافة حدث"
   },
   "events": {
