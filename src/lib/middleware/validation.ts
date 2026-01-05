@@ -164,6 +164,11 @@ export const reimbursementSchema = z.object({
 
 export const animalCreateSchema = z
   .object({
+    tagNumber: z
+      .string()
+      .max(20, "Tag number cannot exceed 20 characters")
+      .regex(/^[A-Za-z0-9-_]*$/, "Tag number can only contain letters, numbers, hyphens, and underscores")
+      .optional(),
     type: z.enum(["INDIVIDUAL", "LOT"], {
       required_error: "Animal type is required",
       invalid_type_error: "Type must be either INDIVIDUAL or LOT",
@@ -187,6 +192,7 @@ export const animalCreateSchema = z
       })
       .int("Age must be a whole number")
       .min(0, "Age cannot be negative")
+      .max(50, "Age cannot exceed 50 years")
       .optional(),
     status: z
       .enum(["ACTIVE", "SOLD", "DEAD"], {
@@ -222,6 +228,11 @@ export const animalCreateSchema = z
   );
 
 export const animalUpdateSchema = z.object({
+  tagNumber: z
+    .string()
+    .max(20, "Tag number cannot exceed 20 characters")
+    .regex(/^[A-Za-z0-9-_]*$/, "Tag number can only contain letters, numbers, hyphens, and underscores")
+    .optional(),
   species: z
     .string()
     .min(1, "Species cannot be empty")
@@ -410,6 +421,7 @@ export const animalFiltersSchema = z.object({
   type: z.enum(["INDIVIDUAL", "LOT"]).optional(),
   status: z.enum(["ACTIVE", "SOLD", "DEAD"]).optional(),
   sex: z.enum(["MALE", "FEMALE"]).optional(),
+  tagNumber: z.string().optional(),
   limit: z.number().int().min(1).max(100).default(50).optional(),
   offset: z.number().int().min(0).default(0).optional(),
 });

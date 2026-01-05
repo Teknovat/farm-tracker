@@ -112,6 +112,7 @@ export const POST = withErrorHandler(
 
     const animalData: CreateAnimalData = {
       farmId: farmId,
+      tagNumber: validatedData.tagNumber,
       type: validatedData.type,
       species: validatedData.species,
       sex: validatedData.sex,

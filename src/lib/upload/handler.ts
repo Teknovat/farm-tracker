@@ -1,6 +1,3 @@
-import { writeFile, mkdir } from 'fs/promises'
-import { existsSync } from 'fs'
-import path from 'path'
 import { UPLOAD_CONFIG, isValidImageType, isValidDocumentType, isValidFileSize } from './config'
 
 export interface UploadResult {
@@ -35,29 +32,15 @@ export async function uploadFile(
             }
         }
 
-        // Create upload directory if it doesn't exist
-        const uploadDir = path.join(UPLOAD_CONFIG.uploadDir, farmId, type + 's')
-        if (!existsSync(uploadDir)) {
-            await mkdir(uploadDir, { recursive: true })
-        }
-
-        // Generate unique filename
-        const timestamp = Date.now()
-        const extension = path.extname(file.name)
-        const filename = `${timestamp}-${crypto.randomUUID()}${extension}`
-        const filepath = path.join(uploadDir, filename)
-
-        // Convert File to Buffer and write to disk
+        // Convert file to Base64 data URL for Vercel compatibility
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
-        await writeFile(filepath, buffer)
-
-        // Return public URL
-        const publicUrl = `${UPLOAD_CONFIG.publicPath}/${farmId}/${type}s/${filename}`
+        const base64 = buffer.toString('base64')
+        const dataUrl = `data:${file.type};base64,${base64}`
 
         return {
             success: true,
-            url: publicUrl
+            url: dataUrl
         }
     } catch (error) {
         console.error('Upload error:', error)

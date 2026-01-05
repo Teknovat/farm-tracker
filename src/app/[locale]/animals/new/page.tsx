@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { ImageUpload } from "@/components/ui/ImageUpload";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/lib/auth/context";
 import { useTranslations } from "next-intl";
@@ -27,11 +28,11 @@ function NewAnimalContent() {
 
   const speciesOptions = [
     { value: "", label: tForms("selectOption") },
-    { value: "Cow", label: t("species.cow") },
-    { value: "Sheep", label: t("species.sheep") },
-    { value: "Goat", label: t("species.goat") },
-    { value: "Chicken", label: t("species.chicken") },
-    { value: "Other", label: t("species.other") },
+    { value: "Cow", label: t("speciesTypes.cow") },
+    { value: "Sheep", label: t("speciesTypes.sheep") },
+    { value: "Goat", label: t("speciesTypes.goat") },
+    { value: "Chicken", label: t("speciesTypes.chicken") },
+    { value: "Other", label: t("speciesTypes.other") },
   ];
 
   const sexOptions = [
@@ -47,6 +48,7 @@ function NewAnimalContent() {
   ];
 
   const [formData, setFormData] = useState({
+    tagNumber: "",
     type: "",
     species: "",
     customSpecies: "",
@@ -57,6 +59,8 @@ function NewAnimalContent() {
     lotCount: "",
   });
 
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -68,13 +72,37 @@ function NewAnimalContent() {
     setError("");
 
     try {
+      let photoUrl = uploadedImageUrl;
+
+      // Upload image if selected
+      if (selectedImage) {
+        const uploadFormData = new FormData();
+        uploadFormData.append("photo", selectedImage);
+
+        const uploadResponse = await fetch(`/api/farms/${farm.id}/animals/upload`, {
+          method: "POST",
+          body: uploadFormData,
+        });
+
+        const uploadData = await uploadResponse.json();
+
+        if (uploadData.success) {
+          photoUrl = uploadData.data.photoUrl;
+        } else {
+          setError(uploadData.error || tCommon("error"));
+          return;
+        }
+      }
+
       const animalData = {
+        tagNumber: formData.tagNumber || undefined,
         type: formData.type,
         species: formData.species === "Other" ? formData.customSpecies : formData.species,
         sex: formData.sex || undefined,
         birthDate: formData.birthDate || undefined,
         estimatedAge: formData.estimatedAge ? parseInt(formData.estimatedAge) : undefined,
         status: formData.status,
+        photoUrl: photoUrl || undefined,
         lotCount: formData.type === "LOT" && formData.lotCount ? parseInt(formData.lotCount) : undefined,
       };
 
@@ -91,11 +119,11 @@ function NewAnimalContent() {
       if (data.success) {
         router.push("/animals");
       } else {
-        setError(data.error || t("animalCreated")); // This should be an error message
+        setError(data.error || tCommon("error"));
       }
     } catch (error) {
       console.error("Error creating animal:", error);
-      setError("Erreur réseau. Veuillez réessayer.");
+      setError(tCommon("error"));
     } finally {
       setIsSubmitting(false);
     }
@@ -103,6 +131,16 @@ function NewAnimalContent() {
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleImageSelect = (file: File) => {
+    setSelectedImage(file);
+    setUploadedImageUrl(""); // Clear any existing uploaded URL
+  };
+
+  const handleImageRemove = () => {
+    setSelectedImage(null);
+    setUploadedImageUrl("");
   };
 
   const isIndividual = formData.type === "INDIVIDUAL";
@@ -116,6 +154,14 @@ function NewAnimalContent() {
 
         <Card>
           <div className="space-y-4">
+            <Input
+              label={t("tagNumber")}
+              placeholder={t("tagNumberPlaceholder")}
+              value={formData.tagNumber}
+              onChange={(e) => handleChange("tagNumber", e.target.value)}
+              fullWidth
+            />
+
             <Select
               label={`${t("type")} *`}
               options={typeOptions}
@@ -136,8 +182,8 @@ function NewAnimalContent() {
 
             {isCustomSpecies && (
               <Input
-                label={`${t("species")} personnalisée *`}
-                placeholder="Saisir le nom de l'espèce"
+                label={`${t("customSpecies")} *`}
+                placeholder={t("customSpeciesPlaceholder")}
                 value={formData.customSpecies}
                 onChange={(e) => handleChange("customSpecies", e.target.value)}
                 fullWidth
@@ -156,10 +202,23 @@ function NewAnimalContent() {
           </div>
         </Card>
 
+        {/* Photo Upload */}
+        <Card>
+          <div className="space-y-4">
+            <h3 className="font-medium text-gray-900">{t("animalPhoto")}</h3>
+            <ImageUpload
+              onImageSelect={handleImageSelect}
+              onImageRemove={handleImageRemove}
+              currentImageUrl={uploadedImageUrl}
+              label={t("addPhoto")}
+            />
+          </div>
+        </Card>
+
         {/* Individual Animal Fields */}
         {isIndividual && (
           <Card>
-            <h3 className="font-medium text-gray-900 mb-4">Détails de l'animal individuel</h3>
+            <h3 className="font-medium text-gray-900 mb-4">{t("individualDetails")}</h3>
             <div className="space-y-4">
               <Select
                 label={t("sex")}
@@ -178,9 +237,9 @@ function NewAnimalContent() {
               />
 
               <Input
-                label={`${t("estimatedAge")} (mois)`}
+                label={t("estimatedAgeMonths")}
                 type="number"
-                placeholder="ex: 24"
+                placeholder={t("estimatedAgePlaceholder")}
                 value={formData.estimatedAge}
                 onChange={(e) => handleChange("estimatedAge", e.target.value)}
                 fullWidth
@@ -192,12 +251,12 @@ function NewAnimalContent() {
         {/* Lot Fields */}
         {isLot && (
           <Card>
-            <h3 className="font-medium text-gray-900 mb-4">Détails du lot</h3>
+            <h3 className="font-medium text-gray-900 mb-4">{t("lotDetails")}</h3>
             <div className="space-y-4">
               <Input
                 label={`${t("lotCount")} *`}
                 type="number"
-                placeholder="ex: 25"
+                placeholder={t("lotCountPlaceholder")}
                 value={formData.lotCount}
                 onChange={(e) => handleChange("lotCount", e.target.value)}
                 fullWidth
@@ -211,8 +270,13 @@ function NewAnimalContent() {
         {formData.type && formData.species && (
           <Card>
             <div className="bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-medium text-blue-900 mb-2">Aperçu de l'animal</h3>
+              <h3 className="font-medium text-blue-900 mb-2">{t("animalPreview")}</h3>
               <div className="space-y-1 text-sm text-blue-800">
+                {formData.tagNumber && (
+                  <div>
+                    {t("number")}: {formData.tagNumber}
+                  </div>
+                )}
                 <div>
                   {t("type")}: {typeOptions.find((t) => t.value === formData.type)?.label}
                 </div>
@@ -237,7 +301,12 @@ function NewAnimalContent() {
                     {t("estimatedAge")}: {formData.estimatedAge} mois
                   </div>
                 )}
-                {isLot && formData.lotCount && <div>Taille du lot: {formData.lotCount} animaux</div>}
+                {isLot && formData.lotCount && (
+                  <div>
+                    {t("lotSize")}: {formData.lotCount} {t("animals")}
+                  </div>
+                )}
+                {(selectedImage || uploadedImageUrl) && <div>📷 {t("photoAdded")}</div>}
               </div>
             </div>
           </Card>
@@ -256,7 +325,7 @@ function NewAnimalContent() {
               (isLot && !formData.lotCount)
             }
           >
-            {isSubmitting ? "Ajout en cours..." : t("addAnimal")}
+            {isSubmitting ? t("addingAnimal") : t("addAnimal")}
           </Button>
         </div>
       </form>

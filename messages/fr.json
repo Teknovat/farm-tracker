@@ -75,7 +75,24 @@
     "animalCreated": "Animal créé avec succès",
     "animalUpdated": "Animal mis à jour avec succès",
     "animalDeleted": "Animal supprimé avec succès",
-    "species": {
+    "tagNumber": "Numéro d'immatriculation",
+    "tagNumberPlaceholder": "ex: A001, TAG-123",
+    "customSpecies": "Espèce personnalisée",
+    "customSpeciesPlaceholder": "Saisir le nom de l'espèce",
+    "animalPhoto": "Photo de l'animal",
+    "addPhoto": "Ajouter une photo",
+    "individualDetails": "Détails de l'animal individuel",
+    "lotDetails": "Détails du lot",
+    "animalPreview": "Aperçu de l'animal",
+    "number": "Numéro",
+    "lotSize": "Taille du lot",
+    "animals": "animaux",
+    "photoAdded": "Photo ajoutée",
+    "addingAnimal": "Ajout en cours...",
+    "estimatedAgeMonths": "Âge estimé (mois)",
+    "estimatedAgePlaceholder": "ex: 24",
+    "lotCountPlaceholder": "ex: 25",
+    "speciesTypes": {
       "cow": "Vache",
       "sheep": "Mouton",
       "goat": "Chèvre",
@@ -310,6 +327,11 @@
       "required": "L'espèce est requise",
       "empty": "L'espèce ne peut pas être vide",
       "maxLength": "Le nom de l'espèce ne peut pas dépasser {max} caractères"
+    },
+    "tagNumber": {
+      "maxLength": "Le numéro d'immatriculation ne peut pas dépasser {max} caractères",
+      "invalidFormat": "Le numéro d'immatriculation ne peut contenir que des lettres, chiffres, tirets et underscores",
+      "alreadyExists": "Ce numéro d'immatriculation existe déjà dans cette ferme"
     },
     "sex": {
       "invalid": "Le sexe doit être MALE ou FEMALE"

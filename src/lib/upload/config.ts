@@ -1,9 +1,9 @@
 export const UPLOAD_CONFIG = {
-    maxFileSize: 5 * 1024 * 1024, // 5MB
+    maxFileSize: 2 * 1024 * 1024, // 2MB (reduced for Base64 storage)
     allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp'],
     allowedDocumentTypes: ['application/pdf', 'text/plain', 'application/msword'],
-    uploadDir: process.env.UPLOAD_DIR || './uploads',
-    publicPath: '/uploads',
+    // For Vercel deployment, we'll use Base64 encoding instead of file system
+    useBase64Storage: process.env.NODE_ENV === 'production' || process.env.USE_BASE64_STORAGE === 'true',
 }
 
 export function isValidImageType(mimeType: string): boolean {

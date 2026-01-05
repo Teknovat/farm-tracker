@@ -5,6 +5,7 @@ import { eq, and, isNull, like, inArray, count } from 'drizzle-orm'
 export interface Animal {
     id: string
     farmId: string
+    tagNumber?: string
     type: 'INDIVIDUAL' | 'LOT'
     species: string
     sex?: 'MALE' | 'FEMALE'
@@ -25,10 +26,12 @@ export interface AnimalFilters {
     type?: 'INDIVIDUAL' | 'LOT'
     status?: 'ACTIVE' | 'SOLD' | 'DEAD'
     sex?: 'MALE' | 'FEMALE'
+    tagNumber?: string
 }
 
 export interface CreateAnimalData {
     farmId: string
+    tagNumber?: string
     type: 'INDIVIDUAL' | 'LOT'
     species: string
     sex?: 'MALE' | 'FEMALE'
@@ -42,6 +45,7 @@ export interface CreateAnimalData {
 }
 
 export interface UpdateAnimalData {
+    tagNumber?: string
     species?: string
     sex?: 'MALE' | 'FEMALE'
     birthDate?: Date
@@ -77,6 +81,10 @@ export class AnimalRepository extends BaseRepository<Animal> {
 
         if (filters?.sex) {
             conditions.push(eq(animals.sex, filters.sex))
+        }
+
+        if (filters?.tagNumber) {
+            conditions.push(like(animals.tagNumber, `%${filters.tagNumber}%`))
         }
 
         const result = await db
@@ -120,6 +128,20 @@ export class AnimalRepository extends BaseRepository<Animal> {
         return Number(result[0]?.count ?? 0)
     }
 
+    async findByTagNumber(farmId: string, tagNumber: string): Promise<Animal | null> {
+        const result = await db
+            .select()
+            .from(animals)
+            .where(and(
+                eq(animals.farmId, farmId),
+                eq(animals.tagNumber, tagNumber),
+                isNull(animals.deletedAt)
+            ))
+            .limit(1)
+
+        return result[0] as Animal || null
+    }
+
     async validateAnimalData(data: CreateAnimalData): Promise<string[]> {
         const errors: string[] = []
 
@@ -138,6 +160,24 @@ export class AnimalRepository extends BaseRepository<Animal> {
 
         if (!data.createdBy) {
             errors.push('Created by is required')
+        }
+
+        // Tag number validation
+        if (data.tagNumber) {
+            // Check if tag number is unique within the farm
+            const existingAnimal = await this.findByTagNumber(data.farmId, data.tagNumber)
+            if (existingAnimal) {
+                errors.push('Tag number already exists in this farm')
+            }
+
+            // Validate tag number format (alphanumeric, max 20 characters)
+            if (!/^[A-Za-z0-9-_]+$/.test(data.tagNumber)) {
+                errors.push('Tag number can only contain letters, numbers, hyphens, and underscores')
+            }
+
+            if (data.tagNumber.length > 20) {
+                errors.push('Tag number cannot exceed 20 characters')
+            }
         }
 
         // Type-specific validation

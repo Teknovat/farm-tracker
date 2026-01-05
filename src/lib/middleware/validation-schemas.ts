@@ -205,6 +205,10 @@ export async function createAnimalCreateSchema(locale: Locale = "fr") {
         .min(1, t("species.empty"))
         .max(100, t("species.maxLength", { max: 100 }))
         .trim(),
+      tagNumber: z.string({
+        required_error: t("tagNumber.required"),
+      })
+        .trim(),
       sex: z
         .enum(["MALE", "FEMALE"], {
           invalid_type_error: t("sex.invalid"),
