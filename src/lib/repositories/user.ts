@@ -78,3 +78,5 @@ export class UserRepository {
         return result.rowsAffected > 0
     }
 }
+
+export const userRepository = new UserRepository()

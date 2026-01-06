@@ -24,6 +24,20 @@ export const farms = sqliteTable('farms', {
     deletedAt: integer('deleted_at', { mode: 'timestamp' }),
 })
 
+// Farm invitations table (NEW)
+export const farmInvitations = sqliteTable('farm_invitations', {
+    id: text('id').primaryKey(),
+    farmId: text('farm_id').notNull().references(() => farms.id),
+    email: text('email').notNull(),
+    role: text('role', { enum: ['OWNER', 'ASSOCIATE', 'WORKER'] }).notNull(),
+    token: text('token').notNull().unique(),
+    status: text('status', { enum: ['PENDING', 'ACCEPTED', 'EXPIRED'] }).notNull().default('PENDING'),
+    expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+    invitedBy: text('invited_by').notNull().references(() => users.id),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    acceptedAt: integer('accepted_at', { mode: 'timestamp' }),
+})
+
 // Farm members table
 export const farmMembers = sqliteTable('farm_members', {
     id: text('id').primaryKey(),

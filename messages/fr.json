@@ -185,7 +185,9 @@
     "noPermission": "Vous n'avez pas les permissions nécessaires pour gérer les membres.",
     "memberInvited": "Membre invité avec succès",
     "memberUpdated": "Membre mis à jour avec succès",
-    "memberRemoved": "Membre supprimé avec succès"
+    "memberRemoved": "Membre supprimé avec succès",
+    "invitationSent": "Invitation envoyée avec succès",
+    "pendingInvitations": "Invitations en attente"
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -216,7 +218,8 @@
     "invalidAmount": "Montant invalide",
     "fieldRequired": "Ce champ est requis",
     "minLength": "Minimum {min} caractères",
-    "maxLength": "Maximum {max} caractères"
+    "maxLength": "Maximum {max} caractères",
+    "email": "Email"
   },
   "errors": {
     "generic": "Une erreur s'est produite",
