@@ -12,6 +12,7 @@ import Link from "next/link";
 
 interface Animal {
   id: string;
+  tagNumber?: string;
   type: "INDIVIDUAL" | "LOT";
   species: string;
   sex?: "MALE" | "FEMALE";
@@ -22,14 +23,8 @@ interface Animal {
   createdAt: string;
 }
 
-const statusOptions = [
-  { value: "ALL", label: "All Status" },
-  { value: "ACTIVE", label: "Active" },
-  { value: "SOLD", label: "Sold" },
-  { value: "DEAD", label: "Dead" },
-];
-
 function AnimalCard({ animal }: { animal: Animal }) {
+  const t = useTranslations("animals");
   const getStatusColor = (status: string) => {
     switch (status) {
       case "ACTIVE":
@@ -58,24 +53,28 @@ function AnimalCard({ animal }: { animal: Animal }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
               <h3 className="font-medium text-gray-900 truncate">
-                {animal.species} #{animal.id}
+                {animal.tagNumber || `${animal.species} #${animal.id.slice(0, 8)}`}
               </h3>
               <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(animal.status)}`}>
-                {animal.status}
+                {t(animal.status.toLowerCase() as "active" | "sold" | "dead")}
               </span>
             </div>
 
             <div className="mt-1 text-sm text-gray-600">
               {animal.type === "INDIVIDUAL" ? (
                 <>
-                  {animal.sex} • Born {animal.birthDate}
+                  {animal.sex && t(animal.sex.toLowerCase() as "male" | "female")}
+                  {animal.sex && animal.birthDate && " • "}
+                  {animal.birthDate && `${t("animalInfo.born")} ${new Date(animal.birthDate).toLocaleDateString()}`}
                 </>
               ) : (
-                <>Lot of {animal.lotCount} animals</>
+                <>{t("animalInfo.lotOf")} {animal.lotCount} {t("animalInfo.animalsCount")}</>
               )}
             </div>
 
-            <div className="mt-1 text-xs text-gray-500">Added {new Date(animal.createdAt).toLocaleDateString()}</div>
+            <div className="mt-1 text-xs text-gray-500">
+              {t("animalInfo.added")} {new Date(animal.createdAt).toLocaleDateString()}
+            </div>
           </div>
         </div>
       </Card>
@@ -90,6 +89,14 @@ function AnimalsContent() {
   const [speciesFilter, setSpeciesFilter] = useState("ALL");
   const { farm } = useAuth();
   const t = useTranslations("animals");
+
+  // Create status filter options with translations
+  const statusOptions = [
+    { value: "ALL", label: t("filters.allStatus") },
+    { value: "ACTIVE", label: t("active") },
+    { value: "SOLD", label: t("sold") },
+    { value: "DEAD", label: t("dead") },
+  ];
 
   useEffect(() => {
     if (farm) {
@@ -121,7 +128,7 @@ function AnimalsContent() {
 
   // Get unique species for filter
   const speciesOptions = [
-    { value: "ALL", label: "All Species" },
+    { value: "ALL", label: t("filters.allSpecies") },
     ...Array.from(new Set(animals.map(a => a.species))).map(species => ({
       value: species,
       label: species
@@ -178,7 +185,7 @@ function AnimalsContent() {
             <div className="text-center py-8">
               <div className="text-4xl mb-4">🐄</div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">{t("noAnimals")}</h3>
-              <p className="text-gray-600 mb-4">Start by adding your first animal to the farm.</p>
+              <p className="text-gray-600 mb-4">{t("noAnimalsMessage")}</p>
               <Link href="/animals/new">
                 <Button>{t("addAnimal")}</Button>
               </Link>

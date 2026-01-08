@@ -77,7 +77,7 @@ function NewEventForm() {
           { value: "", label: t("forms.selectAnimal") },
           ...data.data.map((animal: any) => ({
             value: animal.id,
-            label: `${animal.species} #${animal.id.slice(0, 8)}${animal.type === "LOT" ? ` (${animal.lotCount} animals)` : ""}`,
+            label: `${animal.tagNumber || `${animal.species} #${animal.id.slice(0, 8)}`}${animal.type === "LOT" ? ` (${animal.lotCount} ${t("animals.animalInfo.animalsCount")})` : ""}`,
           })),
         ];
         setAnimals(animalOptions);

@@ -75,8 +75,8 @@
     "animalCreated": "Animal créé avec succès",
     "animalUpdated": "Animal mis à jour avec succès",
     "animalDeleted": "Animal supprimé avec succès",
-    "tagNumber": "Numéro d'immatriculation",
-    "tagNumberPlaceholder": "ex: A001, TAG-123",
+    "tagNumber": "Identifiant",
+    "tagNumberPlaceholder": "ex: A001, JoliB, 420",
     "customSpecies": "Espèce personnalisée",
     "customSpeciesPlaceholder": "Saisir le nom de l'espèce",
     "animalPhoto": "Photo de l'animal",
@@ -98,6 +98,37 @@
       "goat": "Chèvre",
       "chicken": "Poulet",
       "other": "Autre"
+    },
+    "filters": {
+      "allStatus": "Tous les statuts",
+      "allSpecies": "Toutes les espèces"
+    },
+    "animalInfo": {
+      "born": "Né le",
+      "lotOf": "Lot de",
+      "animalsCount": "animaux",
+      "added": "Ajouté le"
+    },
+    "noAnimalsMessage": "Commencez par ajouter votre premier animal à la ferme.",
+    "detailPage": {
+      "loading": "Chargement...",
+      "notFound": "Animal non trouvé",
+      "edit": "Modifier",
+      "type": "Type",
+      "sex": "Sexe",
+      "count": "Nombre",
+      "born": "Né le",
+      "age": "Âge",
+      "months": "mois",
+      "quickActions": "Actions rapides",
+      "addEvent": "Ajouter un événement",
+      "takePhoto": "Prendre une photo",
+      "viewTimeline": "Voir la chronologie",
+      "generateReport": "Générer un rapport",
+      "eventBy": "Par",
+      "cost": "Coût",
+      "nextDue": "Prochaine échéance",
+      "noEventsRecorded": "Aucun événement enregistré"
     }
   },
   "events": {
@@ -332,9 +363,10 @@
       "maxLength": "Le nom de l'espèce ne peut pas dépasser {max} caractères"
     },
     "tagNumber": {
-      "maxLength": "Le numéro d'immatriculation ne peut pas dépasser {max} caractères",
-      "invalidFormat": "Le numéro d'immatriculation ne peut contenir que des lettres, chiffres, tirets et underscores",
-      "alreadyExists": "Ce numéro d'immatriculation existe déjà dans cette ferme"
+      "required": "L'identifiant de l'animal est obligatoire",
+      "maxLength": "L'identifiant de l'animal ne peut pas dépasser {max} caractères",
+      "invalidFormat": "L'identifiant de l'animal ne peut contenir que des lettres, chiffres, tirets et underscores",
+      "alreadyExists": "Cet identifiant existe déjà dans cette ferme"
     },
     "sex": {
       "invalid": "Le sexe doit être MALE ou FEMALE"

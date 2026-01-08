@@ -53,7 +53,7 @@ export const farmMembers = sqliteTable('farm_members', {
 export const animals = sqliteTable('animals', {
     id: text('id').primaryKey(),
     farmId: text('farm_id').notNull().references(() => farms.id),
-    tagNumber: text('tag_number'), // Animal identification number/tag
+    tagNumber: text('tag_number'), // Animal identification number/tag or name (required in application)
     type: text('type', { enum: ['INDIVIDUAL', 'LOT'] }).notNull(),
     species: text('species').notNull(),
     sex: text('sex', { enum: ['MALE', 'FEMALE'] }),

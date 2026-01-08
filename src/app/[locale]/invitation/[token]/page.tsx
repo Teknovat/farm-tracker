@@ -86,7 +86,7 @@ export default function InvitationPage({ params }: InvitationPageProps) {
       if (data.success) {
         setSuccess("Invitation acceptée avec succès ! Vous pouvez maintenant vous connecter.");
         setTimeout(() => {
-          router.push("/auth/login");
+          router.push("/login");
         }, 2000);
       } else {
         setError(data.error || "Erreur lors de l'acceptation de l'invitation");
@@ -121,7 +121,7 @@ export default function InvitationPage({ params }: InvitationPageProps) {
             <div className="text-red-500 text-4xl mb-4">❌</div>
             <h1 className="text-xl font-semibold text-gray-900 mb-2">Invitation invalide</h1>
             <p className="text-gray-600 mb-4">{error}</p>
-            <Button onClick={() => router.push("/auth/login")}>Aller à la connexion</Button>
+            <Button onClick={() => router.push("/login")}>Aller à la connexion</Button>
           </div>
         </Card>
       </div>
@@ -136,7 +136,7 @@ export default function InvitationPage({ params }: InvitationPageProps) {
             <div className="text-green-500 text-4xl mb-4">✅</div>
             <h1 className="text-xl font-semibold text-gray-900 mb-2">Invitation acceptée !</h1>
             <p className="text-gray-600 mb-4">{success}</p>
-            <Button onClick={() => router.push("/auth/login")}>Se connecter maintenant</Button>
+            <Button onClick={() => router.push("/login")}>Se connecter maintenant</Button>
           </div>
         </Card>
       </div>
@@ -211,7 +211,7 @@ export default function InvitationPage({ params }: InvitationPageProps) {
           )}
 
           <div className="mt-6 text-center">
-            <Button variant="secondary" onClick={() => router.push("/auth/login")}>
+            <Button variant="secondary" onClick={() => router.push("/login")}>
               Retour à la connexion
             </Button>
           </div>

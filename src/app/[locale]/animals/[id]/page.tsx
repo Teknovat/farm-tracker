@@ -12,6 +12,7 @@ import Link from "next/link";
 
 interface Animal {
   id: string;
+  tagNumber?: string;
   type: "INDIVIDUAL" | "LOT";
   species: string;
   sex?: "MALE" | "FEMALE";
@@ -34,6 +35,7 @@ interface Event {
 }
 
 function EventCard({ event }: { event: Event }) {
+  const t = useTranslations();
   const getEventIcon = (type: string) => {
     switch (type) {
       case "BIRTH":
@@ -80,20 +82,22 @@ function EventCard({ event }: { event: Event }) {
         <span className="text-xl">{getEventIcon(event.eventType)}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
-            <h4 className="font-medium text-gray-900 capitalize">{event.eventType.toLowerCase()}</h4>
+            <h4 className="font-medium text-gray-900 capitalize">
+              {t(`events.${event.eventType.toLowerCase()}`)}
+            </h4>
             <span className="text-sm text-gray-500">{new Date(event.eventDate).toLocaleDateString()}</span>
           </div>
 
           {event.note && <p className="mt-1 text-sm text-gray-700">{event.note}</p>}
 
           <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
-            <span>By {event.createdBy}</span>
-            {event.cost && <span className="font-medium">Cost: {event.cost} TND</span>}
+            <span>{t("animals.detailPage.eventBy")} {event.createdBy}</span>
+            {event.cost && <span className="font-medium">{t("animals.detailPage.cost")}: {event.cost} TND</span>}
           </div>
 
           {event.nextDueDate && (
             <div className="mt-2 text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded">
-              Next due: {new Date(event.nextDueDate).toLocaleDateString()}
+              {t("animals.detailPage.nextDue")}: {new Date(event.nextDueDate).toLocaleDateString()}
             </div>
           )}
         </div>
@@ -159,7 +163,7 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
 
   if (isLoading) {
     return (
-      <MobileLayout title="Loading..." showBack onBack={() => router.back()}>
+      <MobileLayout title={t("animals.detailPage.loading")} showBack onBack={() => router.back()}>
         <div className="flex justify-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
@@ -169,10 +173,10 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
 
   if (!animal) {
     return (
-      <MobileLayout title="Not Found" showBack onBack={() => router.back()}>
+      <MobileLayout title={t("animals.detailPage.notFound")} showBack onBack={() => router.back()}>
         <Card>
           <div className="text-center py-8">
-            <p className="text-gray-600">Animal not found</p>
+            <p className="text-gray-600">{t("animals.detailPage.notFound")}</p>
           </div>
         </Card>
       </MobileLayout>
@@ -181,13 +185,13 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <MobileLayout
-      title={`${animal.species} #${id.slice(0, 8)}`}
+      title={animal.tagNumber || `${animal.species} #${id.slice(0, 8)}`}
       showBack
       onBack={() => router.back()}
       actions={
         <Link href={`/animals/${id}/edit`}>
           <Button size="sm" variant="ghost">
-            Edit
+            {t("animals.detailPage.edit")}
           </Button>
         </Link>
       }
@@ -208,16 +212,16 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-semibold text-gray-900">{animal.species}</h2>
                 <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(animal.status)}`}>
-                  {animal.status}
+                  {t(animal.status.toLowerCase() as "active" | "sold" | "dead")}
                 </span>
               </div>
 
               <div className="space-y-1 text-sm text-gray-600">
-                <div>Type: {animal.type}</div>
-                {animal.sex && <div>Sex: {animal.sex}</div>}
-                {animal.type === "LOT" && animal.lotCount && <div>Count: {animal.lotCount} animals</div>}
-                {animal.birthDate && <div>Born: {new Date(animal.birthDate).toLocaleDateString()}</div>}
-                {animal.estimatedAge && <div>Age: {animal.estimatedAge} months</div>}
+                <div>{t("animals.detailPage.type")}: {t(animal.type.toLowerCase() as "individual" | "lot")}</div>
+                {animal.sex && <div>{t("animals.detailPage.sex")}: {t(animal.sex.toLowerCase() as "male" | "female")}</div>}
+                {animal.type === "LOT" && animal.lotCount && <div>{t("animals.detailPage.count")}: {animal.lotCount} {t("animals.animalInfo.animalsCount")}</div>}
+                {animal.birthDate && <div>{t("animals.detailPage.born")}: {new Date(animal.birthDate).toLocaleDateString()}</div>}
+                {animal.estimatedAge && <div>{t("animals.detailPage.age")}: {animal.estimatedAge} {t("animals.detailPage.months")}</div>}
               </div>
             </div>
           </div>
@@ -226,22 +230,22 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
         {/* Quick Actions */}
         <Card>
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle>{t("animals.detailPage.quickActions")}</CardTitle>
           </CardHeader>
           <div className="grid grid-cols-2 gap-3">
             <Link href={`/events/new?animalId=${id}`}>
               <Button fullWidth variant="primary">
-                {t("addEvent")}
+                {t("animals.detailPage.addEvent")}
               </Button>
             </Link>
             <Button fullWidth variant="secondary">
-              Take Photo
+              {t("animals.detailPage.takePhoto")}
             </Button>
             <Button fullWidth variant="secondary">
-              View Timeline
+              {t("animals.detailPage.viewTimeline")}
             </Button>
             <Button fullWidth variant="secondary">
-              Generate Report
+              {t("animals.detailPage.generateReport")}
             </Button>
           </div>
         </Card>
@@ -255,7 +259,7 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
             {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
-            {events.length === 0 && <p className="text-gray-500 text-center py-4">No events recorded yet</p>}
+            {events.length === 0 && <p className="text-gray-500 text-center py-4">{t("animals.detailPage.noEventsRecorded")}</p>}
           </div>
         </Card>
       </div>

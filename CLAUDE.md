@@ -19,6 +19,8 @@ Farm Tracker is a multilingual (French, English, Arabic) farm management applica
 
 - `npm run db:generate` - Generate Drizzle migrations from schema
 - `npm run db:migrate` - Apply pending migrations
+- `npm run db:push` - Push schema changes directly to database (no migration file)
+- `npm run db:migrate:run` - Run migration script (uses tsx)
 - `npm run db:studio` - Open Drizzle Studio GUI (visual database explorer)
 
 ### Testing Commands
@@ -34,12 +36,13 @@ Farm Tracker is a multilingual (French, English, Arabic) farm management applica
 
 **Technology**: SQLite with Drizzle ORM (`better-sqlite3`)
 
-**Schema Location**: `src/lib/db/schema.ts` defines all tables (users, farms, farmMembers, animals, events, cashboxMovements, creditExpenses)
+**Schema Location**: `src/lib/db/schema.ts` defines all tables (users, farms, farmMembers, farmInvitations, animals, events, cashboxMovements, creditExpenses)
 
 **Repository Pattern**: All database access goes through repositories in `src/lib/repositories/`:
 
 - `BaseRepository<T>` - Abstract base class providing CRUD operations with soft delete support
 - All repositories extend BaseRepository (FarmRepository, AnimalRepository, EventRepository, CashboxRepository, etc.)
+- FarmInvitationRepository handles invitation system (does not extend BaseRepository)
 - Repositories handle validation and business rules at the data layer
 
 **Key Pattern**: Soft deletes are used throughout - records are marked with `deletedAt` timestamp instead of being physically deleted.
@@ -163,6 +166,13 @@ export const POST = withErrorHandler(async (
 - Users can belong to multiple farms
 - Each membership has a role (OWNER/ASSOCIATE/WORKER) and status (ACTIVE/INACTIVE)
 - Farm context is stored in session after user selects a farm
+
+### Farm Invitations
+
+- Token-based invitation system for adding new members to farms
+- Invitations have expiration dates and status tracking (PENDING/ACCEPTED/EXPIRED)
+- Handled via `/api/invitations` endpoints and FarmInvitationRepository
+- Invitations link to specific farms and specify the role for the invitee
 
 ### Animals
 
