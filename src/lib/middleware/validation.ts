@@ -97,6 +97,10 @@ export const depositSchema = z.object({
     .min(1, "Description cannot be empty")
     .max(255, "Description cannot exceed 255 characters")
     .trim(),
+  paidBy: z
+    .string()
+    .uuid("Invalid user ID format")
+    .optional(),
 });
 
 export const cashExpenseSchema = z.object({

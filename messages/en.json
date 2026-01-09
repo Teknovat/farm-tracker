@@ -61,6 +61,8 @@
     "sex": "Sex",
     "male": "Male",
     "female": "Female",
+    "father": "Father",
+    "mother": "Mother",
     "birthDate": "Birth Date",
     "estimatedAge": "Estimated Age",
     "status": "Status",
@@ -81,7 +83,18 @@
       "chicken": "Chicken",
       "other": "Other"
     },
-    "addEvent": "Add Event"
+    "addEvent": "Add Event",
+    "genealogy": "Genealogy",
+    "noParentsRecorded": "No parents recorded",
+    "offspring": "Offspring",
+    "andXMore": "and {count} more",
+    "detailedInformation": "Detailed Information",
+    "identifier": "Identifier",
+    "createdOn": "Created on",
+    "by": "by",
+    "lastUpdated": "Last updated",
+    "totalEvents": "Total events",
+    "unknownUser": "Unknown user"
   },
   "events": {
     "title": "Events",
@@ -105,6 +118,11 @@
     "recordingEvent": "Recording Event...",
     "eventRecorded": "Event recorded successfully",
     "noEvents": "No events recorded",
+    "nextDue": "Next due",
+    "recordedBy": "Recorded by",
+    "startRecordingMessage": "Start by recording your first event.",
+    "filterByAnimal": "Filter by animal",
+    "allAnimals": "All animals",
     "optionalInformation": "Optional Information",
     "addAdditionalNotes": "Add any additional notes..."
   },
@@ -134,7 +152,10 @@
     "movements": "Movements",
     "noMovements": "No movements recorded",
     "depositAdded": "Deposit added successfully",
-    "expenseAdded": "Expense added successfully"
+    "expenseAdded": "Expense added successfully",
+    "paidBy": "Provided by",
+    "memberProvidedFunds": "Member who provided the funds",
+    "currentUser": "Myself"
   },
   "members": {
     "title": "Members",
@@ -400,6 +421,14 @@
       "invalidType": "Reimbursement amount must be a number",
       "positive": "Reimbursement amount must be positive",
       "maxExceeded": "Reimbursement amount cannot exceed {max}"
+    },
+    "fatherId": {
+      "invalidType": "Father ID must be a string",
+      "invalidFormat": "Invalid father ID format"
+    },
+    "motherId": {
+      "invalidType": "Mother ID must be a string",
+      "invalidFormat": "Invalid mother ID format"
     }
   }
 }

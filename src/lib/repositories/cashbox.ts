@@ -1,9 +1,10 @@
 import { db } from '@/lib/db'
-import { cashboxMovements, creditExpenses } from '@/lib/db/schema'
-import { eq, and, isNull, sum, desc } from 'drizzle-orm'
+import { cashboxMovements, creditExpenses, users } from '@/lib/db/schema'
+import { eq, and, isNull, sum, desc, inArray } from 'drizzle-orm'
 import { BaseRepository } from './base'
 
-export interface CashboxMovement {
+// Base cashbox movement interface (data stored in database)
+export interface CashboxMovementDB {
     id: string
     farmId: string
     type: 'DEPOSIT' | 'EXPENSE_CASH' | 'EXPENSE_CREDIT' | 'REIMBURSEMENT'
@@ -11,13 +12,21 @@ export interface CashboxMovement {
     description: string
     category?: 'FEED' | 'VET' | 'LABOR' | 'TRANSPORT' | 'EQUIPMENT' | 'UTILITIES' | 'OTHER'
     relatedExpenseId?: string
-    createdBy: string
+    paidBy?: string // Who provided/paid the money
+    createdBy: string // Who recorded the transaction
     createdAt: Date
     updatedAt: Date
     deletedAt?: Date
 }
 
-export interface CreditExpense {
+// Cashbox movement interface with user names (for API responses)
+export interface CashboxMovement extends CashboxMovementDB {
+    createdByName: string
+    paidByName?: string // Name of who provided/paid the money
+}
+
+// Base credit expense interface (data stored in database)
+export interface CreditExpenseDB {
     id: string
     farmId: string
     amount: number
@@ -32,11 +41,18 @@ export interface CreditExpense {
     deletedAt?: Date
 }
 
+// Credit expense interface with user names (for API responses)
+export interface CreditExpense extends CreditExpenseDB {
+    createdByName: string
+    paidByName: string
+}
+
 export interface CreateDepositData {
     farmId: string
     amount: number
     description: string
-    createdBy: string
+    paidBy?: string // Who provided the money (optional, defaults to createdBy)
+    createdBy: string // Who recorded the transaction
 }
 
 export interface CreateCashExpenseData {
@@ -71,7 +87,7 @@ export interface CashboxBalance {
     totalReimbursements: number
 }
 
-export class CashboxRepository extends BaseRepository<CashboxMovement> {
+export class CashboxRepository extends BaseRepository<CashboxMovementDB> {
     constructor() {
         super(cashboxMovements)
     }
@@ -115,7 +131,7 @@ export class CashboxRepository extends BaseRepository<CashboxMovement> {
     }
 
     async getRecentMovements(farmId: string, limit: number = 10): Promise<CashboxMovement[]> {
-        const movements = await db
+        const movementResults = await db
             .select()
             .from(cashboxMovements)
             .where(
@@ -127,7 +143,36 @@ export class CashboxRepository extends BaseRepository<CashboxMovement> {
             .orderBy(desc(cashboxMovements.createdAt))
             .limit(limit)
 
-        return movements.map(this.mapCashboxMovement)
+        // Get unique user IDs (both createdBy and paidBy)
+        const userIds = new Set<string>()
+        movementResults.forEach(movement => {
+            userIds.add(movement.createdBy)
+            if (movement.paidBy) {
+                userIds.add(movement.paidBy)
+            }
+        })
+
+        // Get user names in one query
+        const userResults = await db
+            .select()
+            .from(users)
+            .where(inArray(users.id, Array.from(userIds)))
+
+        // Create a map of user ID to name
+        const userMap = new Map<string, string>()
+        userResults.forEach(user => {
+            userMap.set(user.id, user.name)
+        })
+
+        // Combine movement data with user names
+        return movementResults.map(movement => ({
+            ...movement,
+            createdAt: new Date(movement.createdAt),
+            updatedAt: new Date(movement.updatedAt),
+            deletedAt: movement.deletedAt ? new Date(movement.deletedAt) : undefined,
+            createdByName: userMap.get(movement.createdBy) || 'Unknown user',
+            paidByName: movement.paidBy ? userMap.get(movement.paidBy) || 'Unknown user' : undefined,
+        })) as CashboxMovement[]
     }
 
     async createDeposit(data: CreateDepositData): Promise<CashboxMovement> {
@@ -137,6 +182,7 @@ export class CashboxRepository extends BaseRepository<CashboxMovement> {
             type: 'DEPOSIT' as const,
             amount: data.amount,
             description: data.description,
+            paidBy: data.paidBy || data.createdBy, // Default to createdBy if paidBy not specified
             createdBy: data.createdBy,
             createdAt: new Date(),
             updatedAt: new Date()
@@ -147,7 +193,28 @@ export class CashboxRepository extends BaseRepository<CashboxMovement> {
             .values(movementData)
             .returning()
 
-        return this.mapCashboxMovement(movement)
+        // Get creator name
+        const creatorResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, movement.createdBy))
+            .limit(1)
+
+        // Get paidBy name
+        const paidByResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, movement.paidBy!))
+            .limit(1)
+
+        return {
+            ...movement,
+            createdAt: new Date(movement.createdAt),
+            updatedAt: new Date(movement.updatedAt),
+            deletedAt: movement.deletedAt ? new Date(movement.deletedAt) : undefined,
+            createdByName: creatorResult[0]?.name || 'Unknown user',
+            paidByName: paidByResult[0]?.name || 'Unknown user',
+        } as CashboxMovement
     }
 
     async createCashExpense(data: CreateCashExpenseData): Promise<CashboxMovement> {
@@ -168,7 +235,20 @@ export class CashboxRepository extends BaseRepository<CashboxMovement> {
             .values(movementData)
             .returning()
 
-        return this.mapCashboxMovement(movement)
+        // Get creator name
+        const creatorResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, movement.createdBy))
+            .limit(1)
+
+        return {
+            ...movement,
+            createdAt: new Date(movement.createdAt),
+            updatedAt: new Date(movement.updatedAt),
+            deletedAt: movement.deletedAt ? new Date(movement.deletedAt) : undefined,
+            createdByName: creatorResult[0]?.name || 'Unknown user',
+        } as CashboxMovement
     }
 
     async createCreditExpense(data: CreateCreditExpenseData): Promise<CreditExpense> {
@@ -205,7 +285,27 @@ export class CashboxRepository extends BaseRepository<CashboxMovement> {
             updatedAt: new Date()
         })
 
-        return this.mapCreditExpense(expense)
+        // Get user names for both createdBy and paidBy
+        const creatorResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, expense.createdBy))
+            .limit(1)
+
+        const paidByResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, expense.paidBy))
+            .limit(1)
+
+        return {
+            ...expense,
+            createdAt: new Date(expense.createdAt),
+            updatedAt: new Date(expense.updatedAt),
+            deletedAt: expense.deletedAt ? new Date(expense.deletedAt) : undefined,
+            createdByName: creatorResult[0]?.name || 'Unknown user',
+            paidByName: paidByResult[0]?.name || 'Unknown user',
+        } as CreditExpense
     }
 
     async createReimbursement(data: CreateReimbursementData): Promise<{ movement: CashboxMovement; expense: CreditExpense }> {
@@ -261,9 +361,42 @@ export class CashboxRepository extends BaseRepository<CashboxMovement> {
             .where(eq(creditExpenses.id, expense.id))
             .returning()
 
+        // Get user names for the movement
+        const movementCreatorResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, movement.createdBy))
+            .limit(1)
+
+        // Get user names for the expense (createdBy and paidBy)
+        const expenseCreatorResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, updatedExpense.createdBy))
+            .limit(1)
+
+        const paidByResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, updatedExpense.paidBy))
+            .limit(1)
+
         return {
-            movement: this.mapCashboxMovement(movement),
-            expense: this.mapCreditExpense(updatedExpense)
+            movement: {
+                ...movement,
+                createdAt: new Date(movement.createdAt),
+                updatedAt: new Date(movement.updatedAt),
+                deletedAt: movement.deletedAt ? new Date(movement.deletedAt) : undefined,
+                createdByName: movementCreatorResult[0]?.name || 'Unknown user',
+            } as CashboxMovement,
+            expense: {
+                ...updatedExpense,
+                createdAt: new Date(updatedExpense.createdAt),
+                updatedAt: new Date(updatedExpense.updatedAt),
+                deletedAt: updatedExpense.deletedAt ? new Date(updatedExpense.deletedAt) : undefined,
+                createdByName: expenseCreatorResult[0]?.name || 'Unknown user',
+                paidByName: paidByResult[0]?.name || 'Unknown user',
+            } as CreditExpense
         }
     }
 
@@ -277,13 +410,40 @@ export class CashboxRepository extends BaseRepository<CashboxMovement> {
             conditions.push(eq(creditExpenses.status, status as any))
         }
 
-        const expenses = await db
+        const expenseResults = await db
             .select()
             .from(creditExpenses)
             .where(and(...conditions))
             .orderBy(desc(creditExpenses.createdAt))
 
-        return expenses.map(this.mapCreditExpense)
+        // Get unique user IDs (both createdBy and paidBy)
+        const userIds = new Set<string>()
+        expenseResults.forEach(expense => {
+            userIds.add(expense.createdBy)
+            userIds.add(expense.paidBy)
+        })
+
+        // Get user names in one query
+        const userResults = await db
+            .select()
+            .from(users)
+            .where(inArray(users.id, Array.from(userIds)))
+
+        // Create a map of user ID to name
+        const userMap = new Map<string, string>()
+        userResults.forEach(user => {
+            userMap.set(user.id, user.name)
+        })
+
+        // Combine expense data with user names
+        return expenseResults.map(expense => ({
+            ...expense,
+            createdAt: new Date(expense.createdAt),
+            updatedAt: new Date(expense.updatedAt),
+            deletedAt: expense.deletedAt ? new Date(expense.deletedAt) : undefined,
+            createdByName: userMap.get(expense.createdBy) || 'Unknown user',
+            paidByName: userMap.get(expense.paidBy) || 'Unknown user',
+        })) as CreditExpense[]
     }
 
     async getOutstandingDebt(farmId: string): Promise<number> {
@@ -301,38 +461,6 @@ export class CashboxRepository extends BaseRepository<CashboxMovement> {
         return typeof total === 'string' ? parseFloat(total) : (total || 0)
     }
 
-    private mapCashboxMovement(row: any): CashboxMovement {
-        return {
-            id: row.id,
-            farmId: row.farmId,
-            type: row.type,
-            amount: row.amount,
-            description: row.description,
-            category: row.category,
-            relatedExpenseId: row.relatedExpenseId,
-            createdBy: row.createdBy,
-            createdAt: row.createdAt,
-            updatedAt: row.updatedAt,
-            deletedAt: row.deletedAt
-        }
-    }
-
-    private mapCreditExpense(row: any): CreditExpense {
-        return {
-            id: row.id,
-            farmId: row.farmId,
-            amount: row.amount,
-            description: row.description,
-            category: row.category,
-            paidBy: row.paidBy,
-            remainingAmount: row.remainingAmount,
-            status: row.status,
-            createdBy: row.createdBy,
-            createdAt: row.createdAt,
-            updatedAt: row.updatedAt,
-            deletedAt: row.deletedAt
-        }
-    }
 }
 
 export const cashboxRepository = new CashboxRepository()

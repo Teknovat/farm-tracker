@@ -36,13 +36,14 @@ export async function POST(
             return createValidationResponse(validation.errors!)
         }
 
-        const { amount, description } = validation.data!
+        const { amount, description, paidBy } = validation.data!
 
         // Create deposit
         const deposit = await cashboxRepository.createDeposit({
             farmId,
             amount,
             description,
+            paidBy: paidBy || user.id, // Default to current user if not specified
             createdBy: user.id
         })
 

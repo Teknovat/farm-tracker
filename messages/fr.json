@@ -62,6 +62,8 @@
     "sex": "Sexe",
     "male": "Mâle",
     "female": "Femelle",
+    "father": "Père",
+    "mother": "Mère",
     "birthDate": "Date de naissance",
     "estimatedAge": "Âge estimé",
     "status": "Statut",
@@ -129,7 +131,18 @@
       "cost": "Coût",
       "nextDue": "Prochaine échéance",
       "noEventsRecorded": "Aucun événement enregistré"
-    }
+    },
+    "genealogy": "Généalogie",
+    "noParentsRecorded": "Aucun parent enregistré",
+    "offspring": "Descendance",
+    "andXMore": "et {count} de plus",
+    "detailedInformation": "Informations détaillées",
+    "identifier": "Identifiant",
+    "createdOn": "Créé le",
+    "by": "par",
+    "lastUpdated": "Dernière modification",
+    "totalEvents": "Événements total",
+    "unknownUser": "Utilisateur inconnu"
   },
   "events": {
     "title": "Événements",
@@ -153,6 +166,11 @@
     "recordingEvent": "Enregistrement de l'événement...",
     "eventRecorded": "Événement enregistré avec succès",
     "noEvents": "Aucun événement enregistré",
+    "nextDue": "Prochaine échéance",
+    "recordedBy": "Enregistré par",
+    "startRecordingMessage": "Commencez par enregistrer votre premier événement.",
+    "filterByAnimal": "Filtrer par animal",
+    "allAnimals": "Tous les animaux",
     "optionalInformation": "Informations optionnelles",
     "addAdditionalNotes": "Ajouter des notes supplémentaires..."
   },
@@ -182,7 +200,10 @@
     "movements": "Mouvements",
     "noMovements": "Aucun mouvement enregistré",
     "depositAdded": "Dépôt ajouté avec succès",
-    "expenseAdded": "Dépense ajoutée avec succès"
+    "expenseAdded": "Dépense ajoutée avec succès",
+    "paidBy": "Fourni par",
+    "memberProvidedFunds": "Membre qui fournit les fonds",
+    "currentUser": "Moi-même"
   },
   "members": {
     "title": "Membres",
@@ -457,6 +478,14 @@
       "invalidType": "Le montant du remboursement doit être un nombre",
       "positive": "Le montant du remboursement doit être positif",
       "maxExceeded": "Le montant du remboursement ne peut pas dépasser {max}"
+    },
+    "fatherId": {
+      "invalidType": "L'identifiant du père doit être une chaîne de caractères",
+      "invalidFormat": "Format d'identifiant du père invalide"
+    },
+    "motherId": {
+      "invalidType": "L'identifiant de la mère doit être une chaîne de caractères",
+      "invalidFormat": "Format d'identifiant de la mère invalide"
     }
   }
 }

@@ -21,7 +21,14 @@ interface Animal {
   birthDate?: string;
   estimatedAge?: number;
   lotCount?: number;
+  fatherId?: string;
+  motherId?: string;
   createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
+  createdByName: string;
+  updatedByName: string;
 }
 
 interface Event {
@@ -32,6 +39,7 @@ interface Event {
   cost?: number;
   nextDueDate?: string;
   createdBy?: string;
+  createdByName?: string;
 }
 
 function EventCard({ event }: { event: Event }) {
@@ -82,22 +90,27 @@ function EventCard({ event }: { event: Event }) {
         <span className="text-xl">{getEventIcon(event.eventType)}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
-            <h4 className="font-medium text-gray-900 capitalize">
-              {t(`events.${event.eventType.toLowerCase()}`)}
-            </h4>
+            <h4 className="font-medium text-gray-900 capitalize">{t(`events.${event.eventType.toLowerCase()}`)}</h4>
             <span className="text-sm text-gray-500">{new Date(event.eventDate).toLocaleDateString()}</span>
           </div>
 
           {event.note && <p className="mt-1 text-sm text-gray-700">{event.note}</p>}
 
           <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
-            <span>{t("animals.detailPage.eventBy")} {event.createdBy}</span>
-            {event.cost && <span className="font-medium">{t("animals.detailPage.cost")}: {event.cost} TND</span>}
+            <span>
+              {t("animals.detailPage.eventBy")}{" "}
+              {event.createdByName || t("animals.unknownUser")}
+            </span>
+            {event.cost && (
+              <span className="font-medium">
+                {t("animals.detailPage.cost")}: {event.cost} TND
+              </span>
+            )}
           </div>
 
           {event.nextDueDate && (
             <div className="mt-2 text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded">
-              {t("animals.detailPage.nextDue")}: {new Date(event.nextDueDate).toLocaleDateString()}
+              {t("detailPage.nextDue")}: {new Date(event.nextDueDate).toLocaleDateString()}
             </div>
           )}
         </div>
@@ -110,6 +123,9 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [animal, setAnimal] = useState<Animal | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
+  const [father, setFather] = useState<Animal | null>(null);
+  const [mother, setMother] = useState<Animal | null>(null);
+  const [offspring, setOffspring] = useState<Animal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { farm } = useAuth();
   const router = useRouter();
@@ -131,7 +147,45 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
       const animalData = await animalResponse.json();
 
       if (animalData.success) {
-        setAnimal(animalData.data);
+        const animalInfo = animalData.data;
+        setAnimal(animalInfo);
+
+        // Fetch parents if they exist
+        if (animalInfo.fatherId) {
+          try {
+            const fatherResponse = await fetch(`/api/farms/${farm.id}/animals/${animalInfo.fatherId}`);
+            const fatherData = await fatherResponse.json();
+            if (fatherData.success) {
+              setFather(fatherData.data);
+            }
+          } catch (error) {
+            console.error("Error fetching father data:", error);
+          }
+        }
+
+        if (animalInfo.motherId) {
+          try {
+            const motherResponse = await fetch(`/api/farms/${farm.id}/animals/${animalInfo.motherId}`);
+            const motherData = await motherResponse.json();
+            if (motherData.success) {
+              setMother(motherData.data);
+            }
+          } catch (error) {
+            console.error("Error fetching mother data:", error);
+          }
+        }
+
+        // Fetch offspring - search for animals where this animal is father or mother
+        try {
+          const offspringResponse = await fetch(`/api/farms/${farm.id}/animals`);
+          const offspringData = await offspringResponse.json();
+          if (offspringData.success) {
+            const children = offspringData.data.filter((a: Animal) => a.fatherId === id || a.motherId === id);
+            setOffspring(children);
+          }
+        } catch (error) {
+          console.error("Error fetching offspring data:", error);
+        }
       }
 
       // Fetch animal events timeline
@@ -163,7 +217,7 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
 
   if (isLoading) {
     return (
-      <MobileLayout title={t("animals.detailPage.loading")} showBack onBack={() => router.back()}>
+      <MobileLayout title={t("detailPage.loading")} showBack onBack={() => router.back()}>
         <div className="flex justify-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
@@ -173,10 +227,10 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
 
   if (!animal) {
     return (
-      <MobileLayout title={t("animals.detailPage.notFound")} showBack onBack={() => router.back()}>
+      <MobileLayout title={t("detailPage.notFound")} showBack onBack={() => router.back()}>
         <Card>
           <div className="text-center py-8">
-            <p className="text-gray-600">{t("animals.detailPage.notFound")}</p>
+            <p className="text-gray-600">{t("detailPage.notFound")}</p>
           </div>
         </Card>
       </MobileLayout>
@@ -191,7 +245,7 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
       actions={
         <Link href={`/animals/${id}/edit`}>
           <Button size="sm" variant="ghost">
-            {t("animals.detailPage.edit")}
+            {t("detailPage.edit")}
           </Button>
         </Link>
       }
@@ -217,11 +271,162 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
               </div>
 
               <div className="space-y-1 text-sm text-gray-600">
-                <div>{t("animals.detailPage.type")}: {t(animal.type.toLowerCase() as "individual" | "lot")}</div>
-                {animal.sex && <div>{t("animals.detailPage.sex")}: {t(animal.sex.toLowerCase() as "male" | "female")}</div>}
-                {animal.type === "LOT" && animal.lotCount && <div>{t("animals.detailPage.count")}: {animal.lotCount} {t("animals.animalInfo.animalsCount")}</div>}
-                {animal.birthDate && <div>{t("animals.detailPage.born")}: {new Date(animal.birthDate).toLocaleDateString()}</div>}
-                {animal.estimatedAge && <div>{t("animals.detailPage.age")}: {animal.estimatedAge} {t("animals.detailPage.months")}</div>}
+                <div>
+                  {t("detailPage.type")}: {t(animal.type.toLowerCase() as "individual" | "lot")}
+                </div>
+                {animal.sex && (
+                  <div>
+                    {t("detailPage.sex")}: {t(animal.sex.toLowerCase() as "male" | "female")}
+                  </div>
+                )}
+                {animal.type === "LOT" && animal.lotCount && (
+                  <div>
+                    {t("detailPage.count")}: {animal.lotCount} {t("animals.animalInfo.animalsCount")}
+                  </div>
+                )}
+                {animal.birthDate && (
+                  <div>
+                    {t("detailPage.born")}: {new Date(animal.birthDate).toLocaleDateString()}
+                  </div>
+                )}
+                {animal.estimatedAge && (
+                  <div>
+                    {t("detailPage.age")}: {animal.estimatedAge} {t("detailPage.months")}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Genealogy Section - Only for Individual Animals */}
+        {animal.type === "INDIVIDUAL" && (father || mother) && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("genealogy")}</CardTitle>
+            </CardHeader>
+            <div className="space-y-3">
+              {father && (
+                <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                  <span className="text-2xl">👨</span>
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900">{t("father")}</div>
+                    <Link href={`/animals/${father.id}`} className="text-blue-600 hover:text-blue-800">
+                      {father.tagNumber || `${father.species} #${father.id.slice(0, 8)}`}
+                    </Link>
+                    <div className="text-sm text-gray-600">{father.species}</div>
+                  </div>
+                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(father.status)}`}>
+                    {t(father.status.toLowerCase() as "active" | "sold" | "dead")}
+                  </span>
+                </div>
+              )}
+
+              {mother && (
+                <div className="flex items-center space-x-3 p-3 bg-pink-50 rounded-lg">
+                  <span className="text-2xl">👩</span>
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900">{t("mother")}</div>
+                    <Link href={`/animals/${mother.id}`} className="text-blue-600 hover:text-blue-800">
+                      {mother.tagNumber || `${mother.species} #${mother.id.slice(0, 8)}`}
+                    </Link>
+                    <div className="text-sm text-gray-600">{mother.species}</div>
+                  </div>
+                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(mother.status)}`}>
+                    {t(mother.status.toLowerCase() as "active" | "sold" | "dead")}
+                  </span>
+                </div>
+              )}
+
+              {!father && !mother && animal.type === "INDIVIDUAL" && (
+                <div className="text-center py-4 text-gray-500">{t("noParentsRecorded")}</div>
+              )}
+            </div>
+          </Card>
+        )}
+
+        {/* Offspring Section */}
+        {offspring.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                {t("offspring")} ({offspring.length})
+              </CardTitle>
+            </CardHeader>
+            <div className="space-y-2">
+              {offspring.slice(0, 5).map((child) => (
+                <Link key={child.id} href={`/animals/${child.id}`}>
+                  <div className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg">
+                    <span className="text-lg">🐄</span>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900">
+                        {child.tagNumber || `${child.species} #${child.id.slice(0, 8)}`}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {child.species} • {child.sex && t(child.sex.toLowerCase() as "male" | "female")}
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(child.status)}`}>
+                      {t(child.status.toLowerCase() as "active" | "sold" | "dead")}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+              {offspring.length > 5 && (
+                <div className="text-center py-2 text-gray-500">{t("andXMore", { count: offspring.length - 5 })}</div>
+              )}
+            </div>
+          </Card>
+        )}
+
+        {/* Detailed Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("detailedInformation")}</CardTitle>
+          </CardHeader>
+          <div className="space-y-3 text-sm">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="font-medium text-gray-900">{t("identifier")}</div>
+                <div className="text-gray-600">{animal.id}</div>
+              </div>
+              {animal.tagNumber && (
+                <div>
+                  <div className="font-medium text-gray-900">{t("tagNumber")}</div>
+                  <div className="text-gray-600">{animal.tagNumber}</div>
+                </div>
+              )}
+            </div>
+
+            <div className="border-t pt-3">
+              <div className="grid grid-cols-1 gap-3">
+                <div>
+                  <div className="font-medium text-gray-900">{t("createdOn")}</div>
+                  <div className="text-gray-600">
+                    {new Date(animal.createdAt).toLocaleString()} {t("by")} {animal.createdByName}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">{t("lastUpdated")}</div>
+                  <div className="text-gray-600">
+                    {new Date(animal.updatedAt).toLocaleString()} {t("by")} {animal.updatedByName}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t pt-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="font-medium text-gray-900">{t("totalEvents")}</div>
+                  <div className="text-gray-600">{events.length}</div>
+                </div>
+                {animal.type === "INDIVIDUAL" && (
+                  <div>
+                    <div className="font-medium text-gray-900">{t("offspring")}</div>
+                    <div className="text-gray-600">{offspring.length}</div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -230,22 +435,22 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
         {/* Quick Actions */}
         <Card>
           <CardHeader>
-            <CardTitle>{t("animals.detailPage.quickActions")}</CardTitle>
+            <CardTitle>{t("detailPage.quickActions")}</CardTitle>
           </CardHeader>
           <div className="grid grid-cols-2 gap-3">
             <Link href={`/events/new?animalId=${id}`}>
               <Button fullWidth variant="primary">
-                {t("animals.detailPage.addEvent")}
+                {t("detailPage.addEvent")}
               </Button>
             </Link>
             <Button fullWidth variant="secondary">
-              {t("animals.detailPage.takePhoto")}
+              {t("detailPage.takePhoto")}
             </Button>
             <Button fullWidth variant="secondary">
-              {t("animals.detailPage.viewTimeline")}
+              {t("detailPage.viewTimeline")}
             </Button>
             <Button fullWidth variant="secondary">
-              {t("animals.detailPage.generateReport")}
+              {t("detailPage.generateReport")}
             </Button>
           </div>
         </Card>
@@ -259,7 +464,9 @@ function AnimalDetailContent({ params }: { params: Promise<{ id: string }> }) {
             {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
-            {events.length === 0 && <p className="text-gray-500 text-center py-4">{t("animals.detailPage.noEventsRecorded")}</p>}
+            {events.length === 0 && (
+              <p className="text-gray-500 text-center py-4">{t("detailPage.noEventsRecorded")}</p>
+            )}
           </div>
         </Card>
       </div>

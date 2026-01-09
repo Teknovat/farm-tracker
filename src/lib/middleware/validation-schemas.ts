@@ -205,16 +205,17 @@ export async function createAnimalCreateSchema(locale: Locale = "fr") {
         .min(1, t("species.empty"))
         .max(100, t("species.maxLength", { max: 100 }))
         .trim(),
-      tagNumber: z.string({
-        required_error: t("tagNumber.required"),
-      })
+      tagNumber: z
+        .string({
+          required_error: t("tagNumber.required"),
+        })
         .trim(),
       sex: z
         .enum(["MALE", "FEMALE"], {
           invalid_type_error: t("sex.invalid"),
         })
         .optional(),
-      birthDate: z.string({ errorMap }).datetime(t("birthDate.invalid")).optional(),
+      birthDate: z.string({ errorMap }).date(t("birthDate.invalid")).optional(),
       estimatedAge: z
         .number({
           invalid_type_error: t("estimatedAge.invalidType"),
@@ -236,6 +237,18 @@ export async function createAnimalCreateSchema(locale: Locale = "fr") {
         .int(t("lotCount.int"))
         .positive(t("lotCount.positive"))
         .max(10000, t("lotCount.maxExceeded", { max: 10000 }))
+        .optional(),
+      fatherId: z
+        .string({
+          invalid_type_error: t("fatherId.invalidType"),
+        })
+        .uuid(t("fatherId.invalidFormat"))
+        .optional(),
+      motherId: z
+        .string({
+          invalid_type_error: t("motherId.invalidType"),
+        })
+        .uuid(t("motherId.invalidFormat"))
         .optional(),
     })
     .refine(
@@ -296,6 +309,20 @@ export async function createAnimalUpdateSchema(locale: Locale = "fr") {
       .int(t("lotCount.int"))
       .positive(t("lotCount.positive"))
       .max(10000, t("lotCount.maxExceeded", { max: 10000 }))
+      .optional(),
+    fatherId: z
+      .string({
+        invalid_type_error: t("fatherId.invalidType"),
+        errorMap,
+      })
+      .uuid(t("fatherId.invalidFormat"))
+      .optional(),
+    motherId: z
+      .string({
+        invalid_type_error: t("motherId.invalidType"),
+        errorMap,
+      })
+      .uuid(t("motherId.invalidFormat"))
       .optional(),
   });
 }

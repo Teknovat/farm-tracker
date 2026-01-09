@@ -1,8 +1,9 @@
 import { db, farms, farmMembers, cashboxMovements, users } from '@/lib/db'
-import { eq, and, isNull } from 'drizzle-orm'
+import { eq, and, isNull, inArray } from 'drizzle-orm'
 import { BaseRepository } from './base'
 
-export interface Farm {
+// Base farm interface (data stored in database)
+export interface FarmDB {
     id: string
     name: string
     currency: string
@@ -12,6 +13,12 @@ export interface Farm {
     updatedBy: string
     updatedAt: Date
     deletedAt: Date | null
+}
+
+// Farm interface with user names (for API responses)
+export interface Farm extends FarmDB {
+    createdByName: string
+    updatedByName: string
 }
 
 export interface FarmMember {
@@ -46,9 +53,51 @@ export interface InviteMemberData {
     invitedBy: string
 }
 
-export class FarmRepository extends BaseRepository<Farm> {
+export class FarmRepository extends BaseRepository<FarmDB> {
     constructor() {
         super(farms)
+    }
+
+    // Override findById to include user information
+    async findById(id: string): Promise<Farm | null> {
+        // First, get the farm
+        const farmResult = await db
+            .select()
+            .from(farms)
+            .where(and(
+                eq(farms.id, id),
+                isNull(farms.deletedAt)
+            ))
+            .limit(1)
+
+        if (farmResult.length === 0) {
+            return null
+        }
+
+        const farm = farmResult[0]
+
+        // Get creator name
+        const creatorResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, farm.createdBy))
+            .limit(1)
+
+        // Get updater name
+        const updaterResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, farm.updatedBy))
+            .limit(1)
+
+        return {
+            ...farm,
+            createdAt: new Date(farm.createdAt),
+            updatedAt: new Date(farm.updatedAt),
+            deletedAt: farm.deletedAt ? new Date(farm.deletedAt) : null,
+            createdByName: creatorResult[0]?.name || 'Unknown user',
+            updatedByName: updaterResult[0]?.name || 'Unknown user',
+        } as Farm
     }
 
     async createFarmWithOwner(data: CreateFarmData): Promise<{ farm: Farm; member: FarmMember }> {
@@ -60,13 +109,13 @@ export class FarmRepository extends BaseRepository<Farm> {
             updatedBy: data.createdBy,
         }
 
-        const farm = await this.create(farmData)
+        const createdFarm = await super.create(farmData)
 
         // Create farm member with OWNER role
         const memberData = {
             id: crypto.randomUUID(),
             userId: data.createdBy,
-            farmId: farm.id,
+            farmId: createdFarm.id,
             role: 'OWNER' as const,
             status: 'ACTIVE' as const,
             createdAt: new Date(),
@@ -78,7 +127,7 @@ export class FarmRepository extends BaseRepository<Farm> {
         // Initialize cashbox with zero balance (create initial deposit of 0)
         const cashboxData = {
             id: crypto.randomUUID(),
-            farmId: farm.id,
+            farmId: createdFarm.id,
             type: 'DEPOSIT' as const,
             amount: 0,
             description: 'Initial cashbox setup',
@@ -89,12 +138,18 @@ export class FarmRepository extends BaseRepository<Farm> {
 
         await db.insert(cashboxMovements).values(cashboxData)
 
+        // Return the farm with user names
+        const farmWithUserNames = await this.findById(createdFarm.id)
+        if (!farmWithUserNames) {
+            throw new Error('Failed to fetch created farm with user names')
+        }
+
         const member = memberData as FarmMember
-        return { farm, member }
+        return { farm: farmWithUserNames, member }
     }
 
     async findUserFarms(userId: string): Promise<Farm[]> {
-        const result = await db
+        const farmResults = await db
             .select({
                 id: farms.id,
                 name: farms.name,
@@ -114,7 +169,34 @@ export class FarmRepository extends BaseRepository<Farm> {
                 isNull(farms.deletedAt)
             ))
 
-        return result as Farm[]
+        // Get unique user IDs
+        const userIds = new Set<string>()
+        farmResults.forEach(farm => {
+            userIds.add(farm.createdBy)
+            userIds.add(farm.updatedBy)
+        })
+
+        // Get user names in one query
+        const userResults = await db
+            .select()
+            .from(users)
+            .where(inArray(users.id, Array.from(userIds)))
+
+        // Create a map of user ID to name
+        const userMap = new Map<string, string>()
+        userResults.forEach(user => {
+            userMap.set(user.id, user.name)
+        })
+
+        // Combine farm data with user names
+        return farmResults.map(farm => ({
+            ...farm,
+            createdAt: new Date(farm.createdAt),
+            updatedAt: new Date(farm.updatedAt),
+            deletedAt: farm.deletedAt ? new Date(farm.deletedAt) : null,
+            createdByName: userMap.get(farm.createdBy) || 'Unknown user',
+            updatedByName: userMap.get(farm.updatedBy) || 'Unknown user',
+        })) as Farm[]
     }
 
     async findFarmMember(farmId: string, userId: string): Promise<FarmMember | null> {

@@ -21,6 +21,7 @@ interface Animal {
   birthDate?: string;
   lotCount?: number;
   createdAt: string;
+  createdByName?: string;
 }
 
 function AnimalCard({ animal }: { animal: Animal }) {
@@ -68,12 +69,15 @@ function AnimalCard({ animal }: { animal: Animal }) {
                   {animal.birthDate && `${t("animalInfo.born")} ${new Date(animal.birthDate).toLocaleDateString()}`}
                 </>
               ) : (
-                <>{t("animalInfo.lotOf")} {animal.lotCount} {t("animalInfo.animalsCount")}</>
+                <>
+                  {t("animalInfo.lotOf")} {animal.lotCount} {t("animalInfo.animalsCount")}
+                </>
               )}
             </div>
 
             <div className="mt-1 text-xs text-gray-500">
               {t("animalInfo.added")} {new Date(animal.createdAt).toLocaleDateString()}
+              {animal.createdByName && ` • ${animal.createdByName}`}
             </div>
           </div>
         </div>
@@ -129,10 +133,10 @@ function AnimalsContent() {
   // Get unique species for filter
   const speciesOptions = [
     { value: "ALL", label: t("filters.allSpecies") },
-    ...Array.from(new Set(animals.map(a => a.species))).map(species => ({
+    ...Array.from(new Set(animals.map((a) => a.species))).map((species) => ({
       value: species,
-      label: species
-    }))
+      label: t(`speciesTypes.${species.toLowerCase()}`),
+    })),
   ];
 
   return (

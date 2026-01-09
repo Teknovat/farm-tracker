@@ -11,11 +11,13 @@ import Link from "next/link";
 
 interface CashboxMovement {
   id: string;
-  type: "DEPOSIT" | "EXPENSE";
+  type: "DEPOSIT" | "EXPENSE_CASH" | "EXPENSE_CREDIT" | "REIMBURSEMENT";
   amount: number;
   description: string;
   category?: string;
-  date: string;
+  createdAt: string;
+  createdByName?: string;
+  paidByName?: string;
 }
 
 interface CashboxBalance {
@@ -26,25 +28,50 @@ interface CashboxBalance {
 }
 
 function MovementCard({ movement }: { movement: CashboxMovement }) {
+  const getMovementIcon = (type: string) => {
+    switch (type) {
+      case "DEPOSIT":
+        return "💰";
+      case "EXPENSE_CASH":
+        return "💸";
+      case "EXPENSE_CREDIT":
+        return "💳";
+      case "REIMBURSEMENT":
+        return "💵";
+      default:
+        return "💸";
+    }
+  };
+
+  const getMovementSign = (type: string) => {
+    return type === "DEPOSIT" ? "+" : "-";
+  };
+
+  const getMovementColor = (type: string) => {
+    return type === "DEPOSIT" ? "text-green-600" : "text-red-600";
+  };
+
   return (
     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
       <div className="flex-1">
         <div className="flex items-center space-x-2">
-          <span>{movement.type === "DEPOSIT" ? "💰" : "💸"}</span>
+          <span>{getMovementIcon(movement.type)}</span>
           <div>
             <p className="font-medium text-gray-900">{movement.description}</p>
             {movement.category && (
               <p className="text-xs text-gray-500">{movement.category}</p>
             )}
             <p className="text-xs text-gray-500">
-              {new Date(movement.date).toLocaleDateString()}
+              {new Date(movement.createdAt).toLocaleDateString()}
+              {movement.paidByName && movement.type === "DEPOSIT" && ` • Par: ${movement.paidByName}`}
+              {movement.createdByName && movement.type !== "DEPOSIT" && ` • ${movement.createdByName}`}
             </p>
           </div>
         </div>
       </div>
-      <div className={`text-right ${movement.type === "DEPOSIT" ? "text-green-600" : "text-red-600"}`}>
+      <div className={`text-right ${getMovementColor(movement.type)}`}>
         <p className="font-semibold">
-          {movement.type === "DEPOSIT" ? "+" : "-"}{movement.amount} TND
+          {getMovementSign(movement.type)}{movement.amount} TND
         </p>
       </div>
     </div>
@@ -73,8 +100,14 @@ function CashboxContent() {
       const data = await response.json();
 
       if (data.success) {
-        setBalance(data.data.balance);
-        setMovements(data.data.movements || []);
+        // L'API retourne la structure directement dans data
+        setBalance({
+          balance: data.data.balance,
+          totalDeposits: data.data.totalDeposits,
+          totalCashExpenses: data.data.totalCashExpenses,
+          totalReimbursements: data.data.totalReimbursements,
+        });
+        setMovements(data.data.recentMovements || []);
       }
     } catch (error) {
       console.error("Error fetching cashbox data:", error);

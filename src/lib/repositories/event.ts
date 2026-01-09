@@ -1,10 +1,11 @@
 import { BaseRepository } from './base'
-import { events } from '@/lib/db/schema'
+import { events, users } from '@/lib/db/schema'
 import { db } from '@/lib/db'
 import { eq, and, isNull, desc, asc, gte, lte, inArray } from 'drizzle-orm'
 import type { EventPayload } from '@/lib/types'
 
-export interface Event {
+// Base event interface (data stored in database)
+export interface EventDB {
     id: string
     farmId: string
     targetType: 'ANIMAL' | 'LOT'
@@ -21,6 +22,12 @@ export interface Event {
     updatedBy: string
     updatedAt: Date
     deletedAt?: Date | null
+}
+
+// Event interface with user names (for API responses)
+export interface Event extends EventDB {
+    createdByName: string
+    updatedByName: string
 }
 
 export interface CreateEventData {
@@ -47,9 +54,53 @@ export interface EventFilters {
     nextDueAfter?: Date
 }
 
-export class EventRepository extends BaseRepository<Event> {
+export class EventRepository extends BaseRepository<EventDB> {
     constructor() {
         super(events)
+    }
+
+    // Override findById to include user information
+    async findById(id: string): Promise<Event | null> {
+        // First, get the event
+        const eventResult = await db
+            .select()
+            .from(events)
+            .where(and(
+                eq(events.id, id),
+                isNull(events.deletedAt)
+            ))
+            .limit(1)
+
+        if (eventResult.length === 0) {
+            return null
+        }
+
+        const event = eventResult[0]
+
+        // Get creator name
+        const creatorResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, event.createdBy))
+            .limit(1)
+
+        // Get updater name
+        const updaterResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, event.updatedBy))
+            .limit(1)
+
+        return {
+            ...event,
+            eventDate: new Date(event.eventDate),
+            nextDueDate: event.nextDueDate ? new Date(event.nextDueDate) : undefined,
+            createdAt: new Date(event.createdAt),
+            updatedAt: new Date(event.updatedAt),
+            deletedAt: event.deletedAt ? new Date(event.deletedAt) : null,
+            createdByName: creatorResult[0]?.name || 'Unknown user',
+            updatedByName: updaterResult[0]?.name || 'Unknown user',
+        } as Event
     }
 
     /**
@@ -66,13 +117,43 @@ export class EventRepository extends BaseRepository<Event> {
             conditions.push(eq(events.targetType, targetType))
         }
 
-        const result = await db
+        // Get events first
+        const eventResults = await db
             .select()
             .from(events)
             .where(and(...conditions))
             .orderBy(asc(events.eventDate), asc(events.createdAt))
 
-        return result as Event[]
+        // Get unique user IDs
+        const userIds = new Set<string>()
+        eventResults.forEach(event => {
+            userIds.add(event.createdBy)
+            userIds.add(event.updatedBy)
+        })
+
+        // Get user names in one query
+        const userResults = await db
+            .select()
+            .from(users)
+            .where(inArray(users.id, Array.from(userIds)))
+
+        // Create a map of user ID to name
+        const userMap = new Map<string, string>()
+        userResults.forEach(user => {
+            userMap.set(user.id, user.name)
+        })
+
+        // Combine event data with user names
+        return eventResults.map(event => ({
+            ...event,
+            eventDate: new Date(event.eventDate),
+            nextDueDate: event.nextDueDate ? new Date(event.nextDueDate) : undefined,
+            createdAt: new Date(event.createdAt),
+            updatedAt: new Date(event.updatedAt),
+            deletedAt: event.deletedAt ? new Date(event.deletedAt) : null,
+            createdByName: userMap.get(event.createdBy) || 'Unknown user',
+            updatedByName: userMap.get(event.updatedBy) || 'Unknown user',
+        })) as Event[]
     }
 
     /**
@@ -136,9 +217,38 @@ export class EventRepository extends BaseRepository<Event> {
             ? (limit ? queryBuilder.limit(limit).offset(offset) : queryBuilder.offset(offset))
             : (limit ? queryBuilder.limit(limit) : queryBuilder)
 
-        const result = await finalQuery
+        const eventResults = await finalQuery
 
-        return result as Event[]
+        // Get unique user IDs
+        const userIds = new Set<string>()
+        eventResults.forEach(event => {
+            userIds.add(event.createdBy)
+            userIds.add(event.updatedBy)
+        })
+
+        // Get user names in one query
+        const userResults = await db
+            .select()
+            .from(users)
+            .where(inArray(users.id, Array.from(userIds)))
+
+        // Create a map of user ID to name
+        const userMap = new Map<string, string>()
+        userResults.forEach(user => {
+            userMap.set(user.id, user.name)
+        })
+
+        // Combine event data with user names
+        return eventResults.map(event => ({
+            ...event,
+            eventDate: new Date(event.eventDate),
+            nextDueDate: event.nextDueDate ? new Date(event.nextDueDate) : undefined,
+            createdAt: new Date(event.createdAt),
+            updatedAt: new Date(event.updatedAt),
+            deletedAt: event.deletedAt ? new Date(event.deletedAt) : null,
+            createdByName: userMap.get(event.createdBy) || 'Unknown user',
+            updatedByName: userMap.get(event.updatedBy) || 'Unknown user',
+        })) as Event[]
     }
 
     /**
@@ -155,13 +265,43 @@ export class EventRepository extends BaseRepository<Event> {
             conditions.push(gte(events.nextDueDate, afterDate))
         }
 
-        const result = await db
+        // Get events first
+        const eventResults = await db
             .select()
             .from(events)
             .where(and(...conditions))
             .orderBy(asc(events.nextDueDate))
 
-        return result as Event[]
+        // Get unique user IDs
+        const userIds = new Set<string>()
+        eventResults.forEach(event => {
+            userIds.add(event.createdBy)
+            userIds.add(event.updatedBy)
+        })
+
+        // Get user names in one query
+        const userResults = await db
+            .select()
+            .from(users)
+            .where(inArray(users.id, Array.from(userIds)))
+
+        // Create a map of user ID to name
+        const userMap = new Map<string, string>()
+        userResults.forEach(user => {
+            userMap.set(user.id, user.name)
+        })
+
+        // Combine event data with user names
+        return eventResults.map(event => ({
+            ...event,
+            eventDate: new Date(event.eventDate),
+            nextDueDate: event.nextDueDate ? new Date(event.nextDueDate) : undefined,
+            createdAt: new Date(event.createdAt),
+            updatedAt: new Date(event.updatedAt),
+            deletedAt: event.deletedAt ? new Date(event.deletedAt) : null,
+            createdByName: userMap.get(event.createdBy) || 'Unknown user',
+            updatedByName: userMap.get(event.updatedBy) || 'Unknown user',
+        })) as Event[]
     }
 
     /**
@@ -191,7 +331,31 @@ export class EventRepository extends BaseRepository<Event> {
             updatedBy: data.createdBy
         }
 
-        return await super.create(eventData)
+        const created = await super.create(eventData)
+
+        // Get user names for the created event
+        const creatorResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, created.createdBy))
+            .limit(1)
+
+        const updaterResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, created.updatedBy))
+            .limit(1)
+
+        return {
+            ...created,
+            eventDate: new Date(created.eventDate),
+            nextDueDate: created.nextDueDate ? new Date(created.nextDueDate) : undefined,
+            createdAt: new Date(created.createdAt),
+            updatedAt: new Date(created.updatedAt),
+            deletedAt: created.deletedAt ? new Date(created.deletedAt) : null,
+            createdByName: creatorResult[0]?.name || 'Unknown user',
+            updatedByName: updaterResult[0]?.name || 'Unknown user',
+        } as Event
     }
 
     /**

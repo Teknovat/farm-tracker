@@ -62,6 +62,8 @@ export const animals = sqliteTable('animals', {
     status: text('status', { enum: ['ACTIVE', 'SOLD', 'DEAD'] }).notNull().default('ACTIVE'),
     photoUrl: text('photo_url'),
     lotCount: integer('lot_count'),
+    fatherId: text('father_id'), // Reference to father animal (optional)
+    motherId: text('mother_id'), // Reference to mother animal (optional)
     createdBy: text('created_by').notNull().references(() => users.id),
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
     updatedBy: text('updated_by').notNull().references(() => users.id),
@@ -104,7 +106,8 @@ export const cashboxMovements = sqliteTable('cashbox_movements', {
         enum: ['FEED', 'VET', 'LABOR', 'TRANSPORT', 'EQUIPMENT', 'UTILITIES', 'OTHER']
     }),
     relatedExpenseId: text('related_expense_id'),
-    createdBy: text('created_by').notNull().references(() => users.id),
+    paidBy: text('paid_by').references(() => users.id), // Who provided/paid the money
+    createdBy: text('created_by').notNull().references(() => users.id), // Who recorded the transaction
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
     updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
     deletedAt: integer('deleted_at', { mode: 'timestamp' }),

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { eventRepository } from '@/lib/repositories/event'
 import { animalRepository } from '@/lib/repositories/animal'
+import { cashboxRepository } from '@/lib/repositories/cashbox'
 import { getCurrentUser } from '@/lib/auth/server'
 import { checkFarmAccess } from '@/lib/auth/permissions'
 import type { ApiResponse } from '@/lib/types'
@@ -150,6 +151,62 @@ export async function POST(
         if (body.attachmentUrl) eventData.attachmentUrl = body.attachmentUrl
 
         const event = await eventRepository.create(eventData)
+
+        // If event has a cost, automatically deduct it from cashbox
+        if (event.cost && event.cost > 0) {
+            try {
+                // Map event types to expense categories
+                const eventTypeToCategory = {
+                    'VACCINATION': 'VET',
+                    'TREATMENT': 'VET',
+                    'FEED': 'FEED',
+                    'SALE': 'OTHER', // Sales shouldn't normally have expenses, but just in case
+                    'BIRTH': 'VET',
+                    'WEIGHT': 'EQUIPMENT',
+                    'DEATH': 'VET',
+                    'NOTE': 'OTHER'
+                } as const;
+
+                // Use provided category from body, or map from event type, or default to OTHER
+                const category = body.category ||
+                                eventTypeToCategory[body.eventType as keyof typeof eventTypeToCategory] ||
+                                'OTHER';
+
+                // Generate descriptive text for the expense
+                const getEventTypeDescription = (eventType: string) => {
+                    const descriptions = {
+                        'VACCINATION': 'Vaccination',
+                        'TREATMENT': 'Traitement médical',
+                        'FEED': 'Alimentation',
+                        'SALE': 'Frais de vente',
+                        'BIRTH': 'Frais de naissance',
+                        'WEIGHT': 'Pesée',
+                        'DEATH': 'Frais vétérinaires',
+                        'NOTE': 'Autre dépense'
+                    };
+                    return descriptions[eventType as keyof typeof descriptions] || eventType;
+                };
+
+                const animalIdentifier = target.tagNumber || `${target.species} #${target.id.slice(0, 8)}`;
+                const eventDescription = getEventTypeDescription(event.eventType);
+                const description = event.note
+                    ? `${eventDescription}: ${event.note} (${animalIdentifier})`
+                    : `${eventDescription} - ${animalIdentifier}`;
+
+                // Create cash expense in cashbox
+                await cashboxRepository.createCashExpense({
+                    farmId: farmId,
+                    amount: event.cost,
+                    description: description,
+                    category: category as any,
+                    createdBy: user.id
+                });
+            } catch (cashboxError) {
+                console.error('Error creating cashbox expense for event:', cashboxError);
+                // Note: We don't fail the event creation if cashbox update fails
+                // This ensures the event is still recorded even if there are cashbox issues
+            }
+        }
 
         return NextResponse.json<ApiResponse>({
             success: true,

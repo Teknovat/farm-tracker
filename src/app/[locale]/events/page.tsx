@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { MobileLayout } from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Select } from "@/components/ui/Select";
 import { useTranslations } from "next-intl";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/lib/auth/context";
@@ -18,31 +19,70 @@ interface Event {
   note?: string;
   cost?: number;
   nextDueDate?: string;
+  createdByName?: string;
 }
 
 function EventCard({ event }: { event: Event }) {
+  const t = useTranslations("events");
+
   const getEventIcon = (type: string) => {
     switch (type) {
-      case "BIRTH": return "🐣";
-      case "VACCINATION": return "💉";
-      case "TREATMENT": return "🏥";
-      case "WEIGHT": return "⚖️";
-      case "SALE": return "💰";
-      case "DEATH": return "💀";
-      case "NOTE": return "📝";
-      default: return "📅";
+      case "BIRTH":
+        return "🐣";
+      case "VACCINATION":
+        return "💉";
+      case "TREATMENT":
+        return "🏥";
+      case "WEIGHT":
+        return "⚖️";
+      case "SALE":
+        return "💰";
+      case "DEATH":
+        return "💀";
+      case "NOTE":
+        return "📝";
+      default:
+        return "📅";
     }
   };
 
   const getEventColor = (type: string) => {
     switch (type) {
-      case "BIRTH": return "bg-green-50 border-green-200";
-      case "VACCINATION": return "bg-blue-50 border-blue-200";
-      case "TREATMENT": return "bg-yellow-50 border-yellow-200";
-      case "WEIGHT": return "bg-purple-50 border-purple-200";
-      case "SALE": return "bg-emerald-50 border-emerald-200";
-      case "DEATH": return "bg-red-50 border-red-200";
-      default: return "bg-gray-50 border-gray-200";
+      case "BIRTH":
+        return "bg-green-50 border-green-200";
+      case "VACCINATION":
+        return "bg-blue-50 border-blue-200";
+      case "TREATMENT":
+        return "bg-yellow-50 border-yellow-200";
+      case "WEIGHT":
+        return "bg-purple-50 border-purple-200";
+      case "SALE":
+        return "bg-emerald-50 border-emerald-200";
+      case "DEATH":
+        return "bg-red-50 border-red-200";
+      default:
+        return "bg-gray-50 border-gray-200";
+    }
+  };
+
+  const getEventTypeTranslation = (type: string) => {
+    switch (type) {
+      case "BIRTH":
+        return t("birth");
+      case "VACCINATION":
+        return t("vaccination");
+      case "TREATMENT":
+        return t("treatment");
+      case "WEIGHT":
+        return t("weight");
+      case "SALE":
+        return t("sale");
+      case "DEATH":
+        return t("death");
+      case "NOTE":
+        return t("note");
+      default:
+        return type;
     }
   };
 
@@ -52,16 +92,21 @@ function EventCard({ event }: { event: Event }) {
         <span className="text-xl">{getEventIcon(event.eventType)}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
-            <h4 className="font-medium text-gray-900 capitalize">{event.eventType.toLowerCase()}</h4>
+            <h4 className="font-medium text-gray-900">{getEventTypeTranslation(event.eventType)}</h4>
             <span className="text-sm text-gray-500">{new Date(event.eventDate).toLocaleDateString()}</span>
           </div>
           {event.note && <p className="mt-1 text-sm text-gray-700">{event.note}</p>}
-          {event.cost && <p className="mt-1 text-xs font-medium text-gray-600">Cost: {event.cost} TND</p>}
+          {event.cost && (
+            <p className="mt-1 text-xs font-medium text-gray-600">
+              {t("cost")}: {event.cost} TND
+            </p>
+          )}
           {event.nextDueDate && (
             <div className="mt-2 text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded">
-              Next due: {new Date(event.nextDueDate).toLocaleDateString()}
+              {t("nextDue")}: {new Date(event.nextDueDate).toLocaleDateString()}
             </div>
           )}
+          {event.createdByName && <p className="mt-2 text-xs text-gray-500">{t("recordedBy")}: {event.createdByName}</p>}
         </div>
       </div>
     </div>
@@ -70,22 +115,57 @@ function EventCard({ event }: { event: Event }) {
 
 function EventsContent() {
   const [events, setEvents] = useState<Event[]>([]);
+  const [animals, setAnimals] = useState<Array<{ value: string; label: string }>>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [animalFilter, setAnimalFilter] = useState("ALL");
   const { farm } = useAuth();
   const t = useTranslations("events");
+  const tAnimals = useTranslations("animals");
+
+  useEffect(() => {
+    if (farm) {
+      fetchAnimals();
+      fetchEvents();
+    }
+  }, [farm]);
 
   useEffect(() => {
     if (farm) {
       fetchEvents();
     }
-  }, [farm]);
+  }, [animalFilter]);
+
+  const fetchAnimals = async () => {
+    if (!farm) return;
+
+    try {
+      const response = await fetch(`/api/farms/${farm.id}/animals?status=ACTIVE`);
+      const data = await response.json();
+
+      if (data.success) {
+        const animalOptions = [
+          { value: "ALL", label: t("allAnimals") },
+          ...data.data.map((animal: any) => ({
+            value: animal.id,
+            label: `${animal.tagNumber || `${animal.species} #${animal.id.slice(0, 8)}`}${animal.type === "LOT" ? ` (${animal.lotCount} ${tAnimals("animalInfo.animalsCount")})` : ""}`,
+          })),
+        ];
+        setAnimals(animalOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching animals:", error);
+    }
+  };
 
   const fetchEvents = async () => {
     if (!farm) return;
 
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/farms/${farm.id}/events`);
+      const params = new URLSearchParams();
+      if (animalFilter !== "ALL") params.append("targetId", animalFilter);
+
+      const response = await fetch(`/api/farms/${farm.id}/events?${params}`);
       const data = await response.json();
 
       if (data.success) {
@@ -108,6 +188,21 @@ function EventsContent() {
       }
     >
       <div className="space-y-4">
+        {/* Filter */}
+        {animals.length > 1 && (
+          <Card>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">{t("filterByAnimal")}</label>
+              <Select
+                options={animals}
+                value={animalFilter}
+                onChange={(e) => setAnimalFilter(e.target.value)}
+                fullWidth
+              />
+            </div>
+          </Card>
+        )}
+
         {isLoading && (
           <div className="flex justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -127,7 +222,7 @@ function EventsContent() {
             <div className="text-center py-8">
               <div className="text-4xl mb-4">📅</div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">{t("noEvents")}</h3>
-              <p className="text-gray-600 mb-4">Start by recording your first event.</p>
+              <p className="text-gray-600 mb-4">{t("startRecordingMessage")}</p>
               <Link href="/events/new">
                 <Button>{t("recordEvent")}</Button>
               </Link>

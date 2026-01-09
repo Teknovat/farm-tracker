@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { MobileLayout } from "@/components/layout/MobileLayout";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/lib/auth/context";
 
@@ -16,15 +17,50 @@ function DepositContent() {
   const t = useTranslations("cashbox");
   const tCommon = useTranslations("common");
   const tForms = useTranslations("forms");
+  const tMembers = useTranslations("members");
 
   const [formData, setFormData] = useState({
     amount: "",
     description: "",
+    paidBy: "", // Member who provided the money
     date: new Date().toISOString().split("T")[0],
   });
 
+  const [members, setMembers] = useState<Array<{ value: string; label: string }>>([]);
+  const [isLoadingMembers, setIsLoadingMembers] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (farm) {
+      fetchMembers();
+    }
+  }, [farm]);
+
+  const fetchMembers = async () => {
+    if (!farm) return;
+
+    setIsLoadingMembers(true);
+    try {
+      const response = await fetch(`/api/farms/${farm.id}/members`);
+      const data = await response.json();
+
+      if (data.success) {
+        const memberOptions = [
+          { value: "", label: tForms("selectOption") },
+          ...data.data.members.map((member: any) => ({
+            value: member.userId,
+            label: member.userName,
+          })),
+        ];
+        setMembers(memberOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching members:", error);
+    } finally {
+      setIsLoadingMembers(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +73,7 @@ function DepositContent() {
       const depositData = {
         amount: parseFloat(formData.amount),
         description: formData.description,
+        paidBy: formData.paidBy || undefined, // Optional field
         date: formData.date,
       };
 
@@ -94,6 +131,15 @@ function DepositContent() {
               required
             />
 
+            <Select
+              label={t("memberProvidedFunds")}
+              options={members}
+              value={formData.paidBy}
+              onChange={(e) => handleChange("paidBy", e.target.value)}
+              fullWidth
+              disabled={isLoadingMembers}
+            />
+
             <Input
               label="Date *"
               type="date"
@@ -117,6 +163,11 @@ function DepositContent() {
                 <div>
                   {t("description")}: {formData.description}
                 </div>
+                {formData.paidBy && (
+                  <div>
+                    {t("paidBy")}: {members.find((m) => m.value === formData.paidBy)?.label || formData.paidBy}
+                  </div>
+                )}
                 <div>Date: {new Date(formData.date).toLocaleDateString("fr-FR")}</div>
               </div>
             </div>

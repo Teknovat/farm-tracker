@@ -1,8 +1,9 @@
-import { db, animals } from '@/lib/db'
+import { db, animals, users } from '@/lib/db'
 import { BaseRepository } from './base'
-import { eq, and, isNull, like, inArray, count } from 'drizzle-orm'
+import { eq, and, isNull, like, inArray, count, ne, or } from 'drizzle-orm'
 
-export interface Animal {
+// Base animal interface (data stored in database)
+export interface AnimalDB {
     id: string
     farmId: string
     tagNumber?: string
@@ -14,11 +15,19 @@ export interface Animal {
     status: 'ACTIVE' | 'SOLD' | 'DEAD'
     photoUrl?: string
     lotCount?: number
+    fatherId?: string
+    motherId?: string
     createdBy: string
     createdAt: Date
     updatedBy: string
     updatedAt: Date
     deletedAt: Date | null
+}
+
+// Animal interface with user names (for API responses)
+export interface Animal extends AnimalDB {
+    createdByName: string
+    updatedByName: string
 }
 
 export interface AnimalFilters {
@@ -40,6 +49,8 @@ export interface CreateAnimalData {
     status?: 'ACTIVE' | 'SOLD' | 'DEAD'
     photoUrl?: string
     lotCount?: number
+    fatherId?: string
+    motherId?: string
     createdBy: string
     updatedBy?: string
 }
@@ -53,12 +64,57 @@ export interface UpdateAnimalData {
     status?: 'ACTIVE' | 'SOLD' | 'DEAD'
     photoUrl?: string
     lotCount?: number
+    fatherId?: string
+    motherId?: string
     updatedBy: string
 }
 
-export class AnimalRepository extends BaseRepository<Animal> {
+export class AnimalRepository extends BaseRepository<AnimalDB> {
     constructor() {
         super(animals)
+    }
+
+    // Override findById to include user information
+    async findById(id: string): Promise<Animal | null> {
+        // First, get the animal
+        const animalResult = await db
+            .select()
+            .from(animals)
+            .where(and(
+                eq(animals.id, id),
+                isNull(animals.deletedAt)
+            ))
+            .limit(1)
+
+        if (animalResult.length === 0) {
+            return null
+        }
+
+        const animal = animalResult[0]
+
+        // Get creator name
+        const creatorResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, animal.createdBy))
+            .limit(1)
+
+        // Get updater name
+        const updaterResult = await db
+            .select({ name: users.name })
+            .from(users)
+            .where(eq(users.id, animal.updatedBy))
+            .limit(1)
+
+        return {
+            ...animal,
+            createdAt: new Date(animal.createdAt),
+            updatedAt: new Date(animal.updatedAt),
+            birthDate: animal.birthDate ? new Date(animal.birthDate) : undefined,
+            deletedAt: animal.deletedAt ? new Date(animal.deletedAt) : null,
+            createdByName: creatorResult[0]?.name || 'Unknown user',
+            updatedByName: updaterResult[0]?.name || 'Unknown user',
+        } as Animal
     }
 
     async findByFarmId(farmId: string, filters?: AnimalFilters): Promise<Animal[]> {
@@ -87,13 +143,42 @@ export class AnimalRepository extends BaseRepository<Animal> {
             conditions.push(like(animals.tagNumber, `%${filters.tagNumber}%`))
         }
 
-        const result = await db
+        // Get animals first
+        const animalResults = await db
             .select()
             .from(animals)
             .where(and(...conditions))
             .orderBy(animals.createdAt)
 
-        return result as Animal[]
+        // Get unique user IDs
+        const userIds = new Set<string>()
+        animalResults.forEach(animal => {
+            userIds.add(animal.createdBy)
+            userIds.add(animal.updatedBy)
+        })
+
+        // Get user names in one query
+        const userResults = await db
+            .select()
+            .from(users)
+            .where(inArray(users.id, Array.from(userIds)))
+
+        // Create a map of user ID to name
+        const userMap = new Map<string, string>()
+        userResults.forEach(user => {
+            userMap.set(user.id, user.name)
+        })
+
+        // Combine animal data with user names
+        return animalResults.map(animal => ({
+            ...animal,
+            createdAt: new Date(animal.createdAt),
+            updatedAt: new Date(animal.updatedAt),
+            birthDate: animal.birthDate ? new Date(animal.birthDate) : undefined,
+            deletedAt: animal.deletedAt ? new Date(animal.deletedAt) : null,
+            createdByName: userMap.get(animal.createdBy) || 'Unknown user',
+            updatedByName: userMap.get(animal.updatedBy) || 'Unknown user',
+        })) as Animal[]
     }
 
     async findByIds(ids: string[]): Promise<Animal[]> {
@@ -215,6 +300,29 @@ export class AnimalRepository extends BaseRepository<Animal> {
             errors.push('Lot count must be positive')
         }
 
+        // Parent validation
+        if (data.fatherId) {
+            const father = await this.findById(data.fatherId)
+            if (!father) {
+                errors.push('Father animal not found')
+            } else if (father.farmId !== data.farmId) {
+                errors.push('Father animal must be from the same farm')
+            } else if (father.sex !== 'MALE') {
+                errors.push('Father animal must be male')
+            }
+        }
+
+        if (data.motherId) {
+            const mother = await this.findById(data.motherId)
+            if (!mother) {
+                errors.push('Mother animal not found')
+            } else if (mother.farmId !== data.farmId) {
+                errors.push('Mother animal must be from the same farm')
+            } else if (mother.sex !== 'FEMALE') {
+                errors.push('Mother animal must be female')
+            }
+        }
+
         return errors
     }
 
@@ -231,7 +339,14 @@ export class AnimalRepository extends BaseRepository<Animal> {
             updatedBy: data.updatedBy || data.createdBy
         }
 
-        return await super.create(animalData)
+        const created = await super.create(animalData)
+
+        // Return the created animal with user names
+        const animalWithNames = await this.findById(created.id)
+        if (!animalWithNames) {
+            throw new Error('Failed to fetch created animal with user names')
+        }
+        return animalWithNames
     }
 
     async update(id: string, data: UpdateAnimalData): Promise<Animal | null> {
@@ -262,7 +377,100 @@ export class AnimalRepository extends BaseRepository<Animal> {
             throw new Error('Lot count must be positive')
         }
 
-        return await super.update(id, data)
+        // Parent validation for updates
+        if (data.fatherId !== undefined) {
+            if (data.fatherId === id) {
+                throw new Error('Animal cannot be its own father')
+            }
+            if (data.fatherId) {
+                const father = await this.findById(data.fatherId)
+                if (!father) {
+                    throw new Error('Father animal not found')
+                } else if (father.farmId !== existing.farmId) {
+                    throw new Error('Father animal must be from the same farm')
+                } else if (father.sex !== 'MALE') {
+                    throw new Error('Father animal must be male')
+                }
+            }
+        }
+
+        if (data.motherId !== undefined) {
+            if (data.motherId === id) {
+                throw new Error('Animal cannot be its own mother')
+            }
+            if (data.motherId) {
+                const mother = await this.findById(data.motherId)
+                if (!mother) {
+                    throw new Error('Mother animal not found')
+                } else if (mother.farmId !== existing.farmId) {
+                    throw new Error('Mother animal must be from the same farm')
+                } else if (mother.sex !== 'FEMALE') {
+                    throw new Error('Mother animal must be female')
+                }
+            }
+        }
+
+        await super.update(id, data)
+
+        // Return the updated animal with user names
+        return await this.findById(id)
+    }
+
+    async getOffspring(animalId: string): Promise<Animal[]> {
+        const result = await db
+            .select()
+            .from(animals)
+            .where(and(
+                isNull(animals.deletedAt),
+                eq(animals.fatherId, animalId)
+            ))
+
+        const motherOffspring = await db
+            .select()
+            .from(animals)
+            .where(and(
+                isNull(animals.deletedAt),
+                eq(animals.motherId, animalId)
+            ))
+
+        // Combine and deduplicate results
+        const allOffspring = [...result, ...motherOffspring]
+        const uniqueOffspring = allOffspring.filter((animal, index, arr) =>
+            arr.findIndex(a => a.id === animal.id) === index
+        )
+
+        return uniqueOffspring as Animal[]
+    }
+
+    // TODO: Implement getSiblings method once Drizzle typing issues are resolved
+    async getSiblings(animalId: string): Promise<Animal[]> {
+        // Temporary implementation - to be completed later
+        return []
+    }
+
+    async getParents(animalId: string): Promise<{ father?: Animal, mother?: Animal }> {
+        const animal = await this.findById(animalId)
+        if (!animal) {
+            return {}
+        }
+
+        const parents: { father?: Animal, mother?: Animal } = {}
+
+        if (animal.fatherId) {
+            const father = await this.findById(animal.fatherId)
+            if (father) {
+                parents.father = father
+            }
+        }
+
+        if (animal.motherId) {
+            const mother = await this.findById(animal.motherId)
+            if (mother) {
+                parents.mother = mother
+            }
+        }
+
+        return parents
     }
 }
 

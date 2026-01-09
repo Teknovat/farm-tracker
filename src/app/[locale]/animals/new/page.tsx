@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MobileLayout } from "@/components/layout/MobileLayout";
 import { Card } from "@/components/ui/Card";
@@ -11,6 +11,15 @@ import { ImageUpload } from "@/components/ui/ImageUpload";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/lib/auth/context";
 import { useTranslations } from "next-intl";
+
+interface Animal {
+  id: string;
+  tagNumber?: string;
+  type: "INDIVIDUAL" | "LOT";
+  species: string;
+  sex?: "MALE" | "FEMALE";
+  status: "ACTIVE" | "SOLD" | "DEAD";
+}
 
 function NewAnimalContent() {
   const router = useRouter();
@@ -57,12 +66,60 @@ function NewAnimalContent() {
     estimatedAge: "",
     status: "ACTIVE",
     lotCount: "",
+    fatherId: "",
+    motherId: "",
   });
+
+  const [availableAnimals, setAvailableAnimals] = useState<Animal[]>([]);
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  // Fetch available animals for parent selection
+  useEffect(() => {
+    if (farm) {
+      fetchAvailableAnimals();
+    }
+  }, [farm]);
+
+  const fetchAvailableAnimals = async () => {
+    if (!farm) return;
+
+    try {
+      const response = await fetch(`/api/farms/${farm.id}/animals?status=ACTIVE`);
+      const data = await response.json();
+
+      if (data.success) {
+        // Only include individual animals for parent selection
+        const individuals = data.data.filter((animal: Animal) => animal.type === "INDIVIDUAL");
+        setAvailableAnimals(individuals);
+      }
+    } catch (error) {
+      console.error("Error fetching animals:", error);
+    }
+  };
+
+  // Create parent selection options
+  const maleAnimals = availableAnimals.filter(animal => animal.sex === "MALE");
+  const femaleAnimals = availableAnimals.filter(animal => animal.sex === "FEMALE");
+
+  const fatherOptions = [
+    { value: "", label: tForms("selectOption") },
+    ...maleAnimals.map(animal => ({
+      value: animal.id,
+      label: animal.tagNumber || `${animal.species} #${animal.id.slice(0, 8)}`
+    }))
+  ];
+
+  const motherOptions = [
+    { value: "", label: tForms("selectOption") },
+    ...femaleAnimals.map(animal => ({
+      value: animal.id,
+      label: animal.tagNumber || `${animal.species} #${animal.id.slice(0, 8)}`
+    }))
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,6 +161,8 @@ function NewAnimalContent() {
         status: formData.status,
         photoUrl: photoUrl || undefined,
         lotCount: formData.type === "LOT" && formData.lotCount ? parseInt(formData.lotCount) : undefined,
+        fatherId: formData.fatherId || undefined,
+        motherId: formData.motherId || undefined,
       };
 
       const response = await fetch(`/api/farms/${farm.id}/animals`, {
@@ -244,6 +303,22 @@ function NewAnimalContent() {
                 onChange={(e) => handleChange("estimatedAge", e.target.value)}
                 fullWidth
               />
+
+              <Select
+                label={t("father")}
+                options={fatherOptions}
+                value={formData.fatherId}
+                onChange={(e) => handleChange("fatherId", e.target.value)}
+                fullWidth
+              />
+
+              <Select
+                label={t("mother")}
+                options={motherOptions}
+                value={formData.motherId}
+                onChange={(e) => handleChange("motherId", e.target.value)}
+                fullWidth
+              />
             </div>
           </Card>
         )}
@@ -299,6 +374,16 @@ function NewAnimalContent() {
                 {isIndividual && formData.estimatedAge && (
                   <div>
                     {t("estimatedAge")}: {formData.estimatedAge} mois
+                  </div>
+                )}
+                {isIndividual && formData.fatherId && (
+                  <div>
+                    {t("father")}: {fatherOptions.find((f) => f.value === formData.fatherId)?.label}
+                  </div>
+                )}
+                {isIndividual && formData.motherId && (
+                  <div>
+                    {t("mother")}: {motherOptions.find((m) => m.value === formData.motherId)?.label}
                   </div>
                 )}
                 {isLot && formData.lotCount && (

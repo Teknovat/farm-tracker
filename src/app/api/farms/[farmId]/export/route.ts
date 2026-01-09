@@ -86,7 +86,7 @@ async function generateAnimalsCsv(farmId: string): Promise<string> {
 
     const headers = [
         'ID', 'Type', 'Species', 'Sex', 'Birth Date', 'Estimated Age',
-        'Status', 'Lot Count', 'Created At', 'Updated At'
+        'Status', 'Lot Count', 'Created At', 'Created By', 'Updated At', 'Updated By'
     ]
 
     const rows = animals.map(animal => [
@@ -99,7 +99,9 @@ async function generateAnimalsCsv(farmId: string): Promise<string> {
         animal.status,
         animal.lotCount?.toString() || '',
         animal.createdAt.toISOString(),
-        animal.updatedAt.toISOString()
+        animal.createdByName,
+        animal.updatedAt.toISOString(),
+        animal.updatedByName
     ])
 
     return generateCsv(headers, rows)
@@ -110,7 +112,7 @@ async function generateEventsCsv(farmId: string): Promise<string> {
 
     const headers = [
         'ID', 'Target ID', 'Target Type', 'Event Type', 'Event Date',
-        'Note', 'Cost', 'Next Due Date', 'Created At', 'Updated At'
+        'Note', 'Cost', 'Next Due Date', 'Created At', 'Created By', 'Updated At', 'Updated By'
     ]
 
     const rows = events.map(event => [
@@ -123,7 +125,9 @@ async function generateEventsCsv(farmId: string): Promise<string> {
         event.cost?.toString() || '',
         event.nextDueDate?.toISOString() || '',
         event.createdAt.toISOString(),
-        event.updatedAt.toISOString()
+        event.createdByName,
+        event.updatedAt.toISOString(),
+        event.updatedByName
     ])
 
     return generateCsv(headers, rows)
@@ -135,7 +139,7 @@ async function generateFinancialCsv(farmId: string): Promise<string> {
 
     const headers = [
         'ID', 'Type', 'Amount', 'Description', 'Category',
-        'Related Expense ID', 'Created At', 'Status', 'Remaining Amount'
+        'Related Expense ID', 'Created At', 'Created By', 'Status', 'Remaining Amount', 'Paid By'
     ]
 
     const rows: string[][] = []
@@ -150,8 +154,10 @@ async function generateFinancialCsv(farmId: string): Promise<string> {
             movement.category || '',
             movement.relatedExpenseId || '',
             movement.createdAt.toISOString(),
+            movement.createdByName || '',
             '', // Status not applicable for movements
-            '' // Remaining amount not applicable for movements
+            '', // Remaining amount not applicable for movements
+            '' // Paid By not applicable for movements
         ])
     })
 
@@ -165,8 +171,10 @@ async function generateFinancialCsv(farmId: string): Promise<string> {
             expense.category,
             '',
             expense.createdAt.toISOString(),
+            expense.createdByName || '',
             expense.status,
-            expense.remainingAmount.toString()
+            expense.remainingAmount.toString(),
+            expense.paidByName || ''
         ])
     })
 

@@ -62,6 +62,8 @@
     "sex": "الجنس",
     "male": "ذكر",
     "female": "أنثى",
+    "father": "الأب",
+    "mother": "الأم",
     "birthDate": "تاريخ الولادة",
     "estimatedAge": "العمر المقدر",
     "status": "الحالة",
@@ -82,7 +84,18 @@
       "chicken": "دجاج",
       "other": "أخرى"
     },
-    "addEvent": "إضافة حدث"
+    "addEvent": "إضافة حدث",
+    "genealogy": "الأنساب",
+    "noParentsRecorded": "لا يوجد والدان مسجلان",
+    "offspring": "النسل",
+    "andXMore": "و {count} أكثر",
+    "detailedInformation": "معلومات مفصلة",
+    "identifier": "المعرف",
+    "createdOn": "تم الإنشاء في",
+    "by": "بواسطة",
+    "lastUpdated": "آخر تحديث",
+    "totalEvents": "إجمالي الأحداث",
+    "unknownUser": "مستخدم غير معروف"
   },
   "events": {
     "title": "الأحداث",
@@ -106,6 +119,11 @@
     "recordingEvent": "جاري تسجيل الحدث...",
     "eventRecorded": "تم تسجيل الحدث بنجاح",
     "noEvents": "لا توجد أحداث مسجلة",
+    "nextDue": "الاستحقاق التالي",
+    "recordedBy": "مسجل بواسطة",
+    "startRecordingMessage": "ابدأ بتسجيل حدثك الأول.",
+    "filterByAnimal": "تصفية حسب الحيوان",
+    "allAnimals": "جميع الحيوانات",
     "optionalInformation": "معلومات اختيارية",
     "addAdditionalNotes": "إضافة ملاحظات إضافية..."
   },
@@ -135,7 +153,10 @@
     "movements": "الحركات",
     "noMovements": "لا توجد حركات مسجلة",
     "depositAdded": "تم إضافة الإيداع بنجاح",
-    "expenseAdded": "تم إضافة المصروف بنجاح"
+    "expenseAdded": "تم إضافة المصروف بنجاح",
+    "paidBy": "مقدم من",
+    "memberProvidedFunds": "العضو الذي يقدم الأموال",
+    "currentUser": "أنا"
   },
   "members": {
     "title": "الأعضاء",
@@ -401,6 +422,14 @@
       "invalidType": "يجب أن يكون مبلغ الاسترداد رقماً",
       "positive": "يجب أن يكون مبلغ الاسترداد موجباً",
       "maxExceeded": "لا يمكن أن يتجاوز مبلغ الاسترداد {max}"
+    },
+    "fatherId": {
+      "invalidType": "معرف الأب يجب أن يكون نصاً",
+      "invalidFormat": "تنسيق معرف الأب غير صالح"
+    },
+    "motherId": {
+      "invalidType": "معرف الأم يجب أن يكون نصاً",
+      "invalidFormat": "تنسيق معرف الأم غير صالح"
     }
   }
 }

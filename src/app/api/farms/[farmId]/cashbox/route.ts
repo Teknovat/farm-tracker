@@ -35,6 +35,12 @@ export async function GET(
         const recentMovements = await cashboxRepository.getRecentMovements(farmId, limit)
         const outstandingDebt = await cashboxRepository.getOutstandingDebt(farmId)
 
+        // Map movements to include proper format for frontend
+        const mappedMovements = recentMovements.map(movement => ({
+            ...movement,
+            createdAt: movement.createdAt.toISOString()
+        }));
+
         return NextResponse.json<ApiResponse>({
             success: true,
             data: {
@@ -43,7 +49,7 @@ export async function GET(
                 totalCashExpenses: balance.totalCashExpenses,
                 totalReimbursements: balance.totalReimbursements,
                 outstandingDebt,
-                recentMovements
+                recentMovements: mappedMovements
             }
         })
 
