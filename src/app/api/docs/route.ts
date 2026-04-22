@@ -229,6 +229,24 @@ const API_DOCUMENTATION = {
                 },
                 response: 'CSV file download'
             }
+        },
+        i18n: {
+            'GET /api/i18n/{lang}': {
+                description: 'Get translation file for specific locale (public endpoint, no authentication required)',
+                parameters: {
+                    lang: 'Locale code: fr|en|ar'
+                },
+                response: {
+                    success: 'boolean',
+                    data: 'Translation JSON object',
+                    message: 'string (optional)'
+                },
+                examples: {
+                    'GET /api/i18n/fr': 'Returns French translations',
+                    'GET /api/i18n/en': 'Returns English translations',
+                    'GET /api/i18n/ar': 'Returns Arabic translations'
+                }
+            }
         }
     },
     authentication: {
