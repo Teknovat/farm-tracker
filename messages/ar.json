@@ -95,7 +95,55 @@
     "by": "بواسطة",
     "lastUpdated": "آخر تحديث",
     "totalEvents": "إجمالي الأحداث",
-    "unknownUser": "مستخدم غير معروف"
+    "unknownUser": "مستخدم غير معروف",
+    "tagNumber": "رقم الوسم",
+    "tagNumberPlaceholder": "مثال : A001، JoliB، 420",
+    "customSpecies": "نوع مخصص",
+    "customSpeciesPlaceholder": "أدخل اسم النوع",
+    "animalPhoto": "صورة الحيوان",
+    "addPhoto": "إضافة صورة",
+    "individualDetails": "تفاصيل الحيوان الفردي",
+    "lotDetails": "تفاصيل المجموعة",
+    "animalPreview": "معاينة الحيوان",
+    "number": "رقم",
+    "lotSize": "حجم المجموعة",
+    "animals": "حيوانات",
+    "photoAdded": "تمت إضافة الصورة",
+    "addingAnimal": "جاري الإضافة...",
+    "estimatedAgeMonths": "العمر المقدر (أشهر)",
+    "estimatedAgePlaceholder": "مثال : 24",
+    "lotCountPlaceholder": "مثال : 25",
+    "filters": {
+      "allStatus": "جميع الحالات",
+      "allSpecies": "جميع الأنواع"
+    },
+    "animalInfo": {
+      "born": "ولد في",
+      "lotOf": "مجموعة من",
+      "animalsCount": "حيوانات",
+      "added": "أضيف في"
+    },
+    "noAnimalsMessage": "ابدأ بإضافة حيوانك الأول إلى المزرعة.",
+    "detailPage": {
+      "loading": "جاري التحميل...",
+      "notFound": "الحيوان غير موجود",
+      "edit": "تعديل",
+      "type": "الفئة",
+      "sex": "الجنس",
+      "count": "العدد",
+      "born": "ولد في",
+      "age": "العمر",
+      "months": "أشهر",
+      "quickActions": "إجراءات سريعة",
+      "addEvent": "إضافة حدث",
+      "takePhoto": "التقاط صورة",
+      "viewTimeline": "عرض الجدول الزمني",
+      "generateReport": "إنشاء تقرير",
+      "eventBy": "بواسطة",
+      "cost": "التكلفة",
+      "nextDue": "الاستحقاق التالي",
+      "noEventsRecorded": "لا توجد أحداث مسجلة"
+    }
   },
   "events": {
     "title": "الأحداث",
@@ -107,7 +155,7 @@
     "targetAnimal": "الحيوان المستهدف",
     "notes": "ملاحظات",
     "cost": "التكلفة",
-    "nextDueDate": "التاريخ المستحق التالي",
+    "nextDueDate": "تاريخ الاستحقاق التالي",
     "attachment": "مرفق",
     "birth": "ولادة",
     "vaccination": "تطعيم",
@@ -190,7 +238,9 @@
     "noPermission": "ليس لديك الصلاحيات اللازمة لإدارة الأعضاء.",
     "memberInvited": "تم دعوة العضو بنجاح",
     "memberUpdated": "تم تحديث العضو بنجاح",
-    "memberRemoved": "تم إزالة العضو بنجاح"
+    "memberRemoved": "تم إزالة العضو بنجاح",
+    "invitationSent": "تمت إرسال الدعوة بنجاح",
+    "pendingInvitations": "الدعوات المعلقة"
   },
   "dashboard": {
     "title": "لوحة التحكم",
@@ -215,13 +265,14 @@
     "selectAnimal": "اختر حيواناً",
     "enterAmount": "أدخل المبلغ",
     "enterDescription": "أدخل الوصف",
-    "chooseFile": "اختر ملف",
+    "chooseFile": "اختر ملفاً",
     "noFileChosen": "لم يتم اختيار ملف",
     "invalidEmail": "بريد إلكتروني غير صحيح",
     "invalidAmount": "مبلغ غير صحيح",
     "fieldRequired": "هذا الحقل مطلوب",
     "minLength": "الحد الأدنى {min} أحرف",
-    "maxLength": "الحد الأقصى {max} أحرف"
+    "maxLength": "الحد الأقصى {max} أحرف",
+    "email": "البريد الإلكتروني"
   },
   "errors": {
     "generic": "حدث خطأ",
@@ -291,7 +342,7 @@
     "joinExistingFarm": "الانضمام إلى مزرعة موجودة",
     "createFarmDescription": "أعط مزرعتك اسماً للبدء",
     "farmName": "اسم المزرعة",
-    "farmNamePlaceholder": "مثال: مزرعة الوادي الأخضر",
+    "farmNamePlaceholder": "مثال : مزرعة الوادي الأخضر",
     "farmNameRequired": "اسم المزرعة مطلوب",
     "farmNameTooShort": "يجب أن يكون الاسم 3 أحرف على الأقل",
     "createFarmButton": "إنشاء مزرعتي",
@@ -399,7 +450,7 @@
       "maxLength": "لا يمكن أن يتجاوز اسم المزرعة {max} حرفاً"
     },
     "currency": {
-      "length": "يجب أن تكون العملة بالضبط 3 أحرف (مثل: TND، USD)"
+      "length": "يجب أن تكون العملة بالضبط 3 أحرف (مثل : TND، USD)"
     },
     "email": {
       "required": "البريد الإلكتروني مطلوب",
@@ -511,7 +562,351 @@
       "useFingerprint": "استخدام بصمة الإصبع",
       "useFaceId": "استخدام Face ID",
       "useBiometric": "استخدام القياسات الحيوية"
+    },
+    "auth": {
+      "appTitle": "Farm Tracker",
+      "subtitle": "سجل الدخول إلى حساب المزرعة",
+      "labels": {
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور"
+      },
+      "placeholders": {
+        "email": "أدخل بريدك الإلكتروني",
+        "password": "أدخل كلمة المرور"
+      },
+      "buttons": {
+        "signIn": "دخول"
+      },
+      "validation": {
+        "emailRequired": "البريد الإلكتروني مطلوب",
+        "invalidEmail": "الرجاء إدخال عنوان بريد إلكتروني صحيح",
+        "passwordRequired": "كلمة المرور مطلوبة",
+        "passwordMinLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل"
+      },
+      "errors": {
+        "loginFailed": "فشل تسجيل الدخول",
+        "invalidCredentials": "بريد إلكتروني أو كلمة مرور غير صحيحة. الرجاء المحاولة مرة أخرى.",
+        "validationError": "خطأ في التحقق من الصحة"
+      },
+      "help": {
+        "contactAdmin": "هل تحتاج إلى مساعدة؟ اتصل بمدير المزرعة"
+      }
+    },
+    "animals": {
+      "screenTitle": "الحيوانات",
+      "createTitle": "إضافة حيوان جديد",
+      "createSubtitleIndividual": "إضافة حيوان فردي مع تتبع مفصل",
+      "createSubtitleLot": "إضافة مجموعة من الحيوانات المتشابهة",
+      "searchPlaceholder": "بحث عن الحيوانات (الوسم، النوع)...",
+      "filterResults": "{count} من {total} حيوان",
+      "footerText": "{count} حيوان • آخر مزامنة : {time}",
+      "loading": "جاري تحميل الحيوانات...",
+      "syncingWithServer": "جاري المزامنة مع الخادم...",
+      "sections": {
+        "type": "نوع الحيوان",
+        "basicInfo": "المعلومات الأساسية",
+        "ageInfo": "معلومات العمر",
+        "status": "الحالة",
+        "parentInfo": "معلومات الوالدين (اختياري)"
+      },
+      "types": {
+        "individual": "فردي",
+        "individualDescription": "حيوان واحد مع تتبع مفصل",
+        "lot": "مجموعة",
+        "lotDescription": "مجموعة من الحيوانات المتشابهة"
+      },
+      "labels": {
+        "species": "النوع *",
+        "tagNumber": "رقم الوسم (اختياري)",
+        "lotCount": "عدد الحيوانات *",
+        "sex": "الجنس (اختياري)",
+        "birthDate": "تاريخ الولادة (اختياري)",
+        "estimatedAge": "العمر المقدر (أشهر)",
+        "fatherId": "معرف الأب",
+        "motherId": "معرف الأم"
+      },
+      "placeholders": {
+        "species": "مثال : أبقار، أغنام، ماعز",
+        "tagNumber": "مثال : A001، TAG-123",
+        "lotCount": "مثال : 25",
+        "birthDate": "YYYY-MM-DD",
+        "estimatedAge": "مثال : 24 (سنتان)",
+        "fatherId": "أدخل معرف أو وسم الأب",
+        "motherId": "أدخل معرف أو وسم الأم"
+      },
+      "hints": {
+        "birthDateFormat": "التنسيق : YYYY-MM-DD (مثال : 2024-03-15)",
+        "estimatedAge": "يحسب تلقائياً من تاريخ الولادة أو أدخل يدوياً",
+        "offlineSyncNotice": "🔄 سيتم حفظ الحيوان محلياً ومزامنته عند الاتصال"
+      },
+      "sex": {
+        "male": "ذكر",
+        "female": "أنثى",
+        "unknown": "غير معروف"
+      },
+      "commonSpecies": {
+        "cattle": "أبقار",
+        "sheep": "أغنام",
+        "goat": "ماعز",
+        "pig": "خنازير",
+        "chicken": "دجاج",
+        "duck": "بط",
+        "horse": "خيل",
+        "rabbit": "أرانب"
+      },
+      "filters": {
+        "active": "نشط ({count})",
+        "individual": "فردي ({count})",
+        "lots": "مجموعات ({count})"
+      },
+      "buttons": {
+        "clearFilters": "مسح الفلترة",
+        "creating": "جاري الإنشاء...",
+        "addAnimal": "إضافة حيوان",
+        "addLot": "إضافة مجموعة",
+        "viewDetails": "عرض التفاصيل"
+      },
+      "statusSubtitle": "{activeCount} نشط، {syncPending} في انتظار المزامنة",
+      "noMatchFilters": "لا توجد حيوانات تطابق فلتراتك",
+      "filterAdjustmentHint": "حاول تعديل معايير البحث أو الفلترة",
+      "empty": {
+        "title": "لا توجد حيوانات حتى الآن",
+        "description": "ابدأ في بناء قطيعانك عن طريق إضافة حيوانك الأول"
+      },
+      "validation": {
+        "typeRequired": "الرجاء تحديد نوع الحيوان",
+        "speciesRequired": "النوع مطلوب",
+        "speciesMinLength": "يجب أن يكون النوع حرفين على الأقل",
+        "speciesMaxLength": "لا يمكن أن يتجاوز النوع 50 حرفاً",
+        "tagNumberMinLength": "يجب أن يحتوي رقم الوسم على حرف واحد على الأقل إذا تم توفيره",
+        "invalidBirthDate": "تنسيق تاريخ ولادة غير صحيح",
+        "birthDateFuture": "لا يمكن أن يكون تاريخ الولادة في المستقبل",
+        "ageRange": "لا يمكن أن يكون العمر سالباً أو يتجاوز 300 شهر",
+        "lotCountRange": "يجب أن يكون عدد المجموعة بين 1 و 10,000",
+        "lotCountInvalid": "عدد المجموعة مطلوب للنوع مجموعة ولا يجب توفيره للحيوانات الفردية",
+        "dateAgeMismatch": "تاريخ الولادة والعمر المقدر غير متطابقين (الهامش : 3 أشهر)"
+      },
+      "errors": {
+        "noFarm": "لا توجد مزرعة محددة. الرجاء تسجيل الدخول مرة أخرى.",
+        "validationError": "خطأ في التحقق من الصحة",
+        "creationFailed": "فشل إنشاء الحيوان",
+        "loadFailed": "فشل تحميل الحيوانات",
+        "deleteFailed": "فشل حذف الحيوان : {error}"
+      },
+      "success": {
+        "created": "تم إنشاء الحيوان",
+        "syncPending": "تمت إضافة {animalName} إلى مزرعتك وسيتم مزامنته عند الاتصال."
+      },
+      "alerts": {
+        "editNotYet": "تعديل الحيوان - تعديل {animalName} - ستتوفر شاشة التعديل في التكرار القادم",
+        "details": "تفاصيل الحيوان",
+        "deleteConfirm": "حذف الحيوان - هل أنت متأكد من أنك تريد حذف هذا الحيوان؟ لا يمكن التراجع عن هذا الإجراء."
+      }
+    },
+    "events": {
+      "screenTitle": "الأحداث",
+      "modal": {
+        "title": "إضافة حدث"
+      },
+      "searchPlaceholder": "بحث عن الأحداث...",
+      "eventCount": "{count} أحداث",
+      "loading": "جاري تحميل الأحداث...",
+      "contextLabel": "إجراءات سريعة للحيوان المحدد",
+      "contextDescription": "سيتم تعبئة الأحداث بقيم افتراضية ذكية",
+      "labels": {
+        "type": "نوع الحدث",
+        "animal": "الحيوان *",
+        "eventDate": "تاريخ الحدث",
+        "notes": "ملاحظات الحدث",
+        "cost": "التكلفة",
+        "nextDueDate": "تاريخ الاستحقاق التالي (اختياري)"
+      },
+      "placeholders": {
+        "selectAnimal": "اختر حيواناً...",
+        "notes": "إضافة ملاحظات حول هذا الحدث...",
+        "cost": "0.00"
+      },
+      "types": {
+        "all": "الكل",
+        "birth": "ولادة",
+        "vaccination": "تطعيم",
+        "vaccines": "اللقاحات",
+        "treatment": "علاج",
+        "weight": "وزن",
+        "sale": "بيع",
+        "death": "وفاة",
+        "note": "ملاحظة",
+        "notes": "ملاحظات"
+      },
+      "typeDescriptions": {
+        "birth": "تسجيل الولادات",
+        "vaccination": "اللقاحات والتمنيعات",
+        "treatment": "العلاجات الطبية",
+        "weight": "قياسات الوزن",
+        "sale": "بيع الحيوانات",
+        "death": "تسجيل الوفيات أو الفقدان",
+        "note": "ملاحظات عامة ومشاهدات"
+      },
+      "quickActions": {
+        "vaccination": "تطعيم",
+        "weight": "وزن",
+        "note": "ملاحظة",
+        "treatment": "علاج"
+      },
+      "quickActionDescriptions": {
+        "vaccination": "تسجيل اللقاحات",
+        "weight": "تسجيل قياسات الوزن",
+        "note": "إضافة ملاحظات عامة",
+        "treatment": "تسجيل العلاجات الطبية"
+      },
+      "empty": {
+        "title": "لم يتم العثور على أحداث",
+        "filterHint": "حاول تعديل البحث أو الفلترة",
+        "description": "ابدأ في متابعة أنشطة المزرعة عن طريق إضافة حدثك الأول"
+      },
+      "errors": {
+        "deleteFailed": "فشل حذف الحدث. الرجاء المحاولة مرة أخرى.",
+        "creationFailed": "فشل إنشاء الحدث. الرجاء المحاولة مرة أخرى.",
+        "animalNotAvailable": "الحيوان المحدد غير متوفر. الرجاء تحديث قائمة الحيوانات والمحاولة مرة أخرى.",
+        "animalNotInFarm": "الحيوان المحدد لا ينتمي إلى هذه المزرعة. الرجاء تحديد حيوان مختلف."
+      },
+      "alerts": {
+        "success": "تم إنشاء الحدث بنجاح!",
+        "editNotYet": "تعديل حدث {eventType} - قريباً!",
+        "details": "عرض تفاصيل حدث {eventType} - قريباً!"
+      },
+      "buttons": {
+        "viewDetails": "عرض التفاصيل"
+      }
+    },
+    "dashboard": {
+      "loading": "جاري تحميل لوحة التحكم...",
+      "role": "الدور : {role}",
+      "sections": {
+        "animals": "🐄 الحيوانات",
+        "financial": "💰 المالي",
+        "reminders": "🔔 التذكيرات"
+      },
+      "animals": {
+        "active": "نشط",
+        "sold": "مباع",
+        "dead": "ميت",
+        "birthsThisMonth": "الولادات هذا الشهر",
+        "deathsThisMonth": "الوفيات هذا الشهر"
+      },
+      "financial": {
+        "cashboxBalance": "رصيد الصندوق",
+        "outstandingDebt": "الديون المستحقة",
+        "expensesThisMonth": "المصروفات هذا الشهر",
+        "expensesByCategory": "المصروفات حسب الفئة"
+      },
+      "reminders": {
+        "urgent": "عاجل",
+        "upcoming": "قادم"
+      },
+      "errors": {
+        "loadFailed": "فشل تحميل بيانات لوحة التحكم. اسحب للتحديث."
+      },
+      "empty": {
+        "message": "مرحباً في Farm Tracker! ابدأ بإضافة حيوانك الأول."
+      }
+    },
+    "profile": {
+      "appVersion": "Farm Tracker Mobile v1.0.0",
+      "appPhase": "المرحلة 1 الأساس",
+      "menu": {
+        "accountSettings": "إعدادات الحساب",
+        "accountSettingsDescription": "إدارة ملفك الشخصي وتفضيلاتك",
+        "farmMembers": "أعضاء المزرعة",
+        "farmMembersDescription": "إدارة وصول الفريق والصلاحيات",
+        "farmSettings": "إعدادات المزرعة",
+        "farmSettingsDescription": "تكوين تفضيلات المزرعة",
+        "dataExport": "تصدير البيانات",
+        "dataExportDescription": "تصدير بيانات المزرعة",
+        "syncStatus": "حالة المزامنة",
+        "helpSupport": "مساعدة ودعم",
+        "helpSupportDescription": "الحصول على مساعدة والتواصل مع الدعم"
+      },
+      "buttons": {
+        "signOut": "تسجيل الخروج"
+      },
+      "alerts": {
+        "signOutConfirm": "تسجيل الخروج",
+        "signOutMessage": "هل أنت متأكد من أنك تريد تسجيل الخروج؟",
+        "syncPending": "لديك تغييرات في انتظار المزامنة.",
+        "syncComplete": "جميع البيانات متزامنة مع الخادم.",
+        "helpMessage": "للمساعدة، الرجاء التواصل مع مدير المزرعة"
+      }
+    },
+    "conflicts": {
+      "title": "صراعات المزامنة",
+      "subtitle": "{count} صراعات تحتاج إلى انتباهك",
+      "types": {
+        "update": "صراع تحديث",
+        "delete": "صراع حذف"
+      },
+      "versionLocal": "تغييراتك المحلية",
+      "versionServer": "نسخة الخادم",
+      "conflictingFields": "الحقول المتضاربة : {fields}",
+      "fields": {
+        "tag": "الوسم : ",
+        "species": "النوع : ",
+        "status": "الحالة : "
+      },
+      "buttons": {
+        "keepServer": "الحفاظ على نسخة الخادم",
+        "keepLocal": "الحفاظ على التغييرات المحلية"
+      },
+      "alerts": {
+        "confirmServerWins": "هذا سيهدر التغييرات المحلية ويحافظ على نسخة الخادم.",
+        "confirmLocalWins": "هذا سيكتب على بيانات الخادم بتغييراتك المحلية."
+      },
+      "resolvedSection": "الصراعات المحلولة",
+      "resolved": "محلول - نسخة {version} محفوظة"
+    },
+    "common": {
+      "loading": "جاري التحميل...",
+      "syncing": "جاري المزامنة...",
+      "pullToRefresh": "اسحب للتحديث",
+      "pullToSync": "اسحب للمزامنة",
+      "lastSync": "آخر مزامنة : ",
+      "characterCount": "{count}/500",
+      "suggested": "(مقترح)",
+      "required": "*",
+      "status": {
+        "online": "متصل",
+        "offline": "غير متصل"
+      },
+      "buttons": {
+        "retry": "إعادة المحاولة",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "edit": "تعديل",
+        "save": "حفظ",
+        "done": "تم",
+        "clear": "مسح"
+      },
+      "alerts": {
+        "error": "خطأ",
+        "success": "نجح",
+        "comingSoon": "قريباً",
+        "memberManagementComingSoon": "إدارة الأعضاء ستكون متوفرة قريباً",
+        "farmSettingsComingSoon": "إعدادات المزرعة ستكون متوفرة قريباً",
+        "dataExportComingSoon": "تصدير البيانات سيكون متوفر قريباً",
+        "databaseError": "خطأ في قاعدة البيانات"
+      },
+      "initializing": "جاري بدء تشغيل Farm Tracker...",
+      "comingSoonPhase2": "قريباً في المرحلة 2"
     }
+  },
+  "actions": {
+    "edit": "تعديل",
+    "delete": "حذف",
+    "viewDetails": "عرض التفاصيل",
+    "deleteAnimalConfirm": "حذف الحيوان",
+    "deleteAnimalMessage": "هل أنت متأكد من أنك تريد حذف {{tag}}؟",
+    "deleteEventConfirm": "حذف الحدث",
+    "deleteEventMessage": "هل أنت متأكد من أنك تريد حذف حدث {{type}}؟"
   },
   "settings": {
     "title": "الإعدادات",

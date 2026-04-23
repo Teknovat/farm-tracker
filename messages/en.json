@@ -21,7 +21,44 @@
     "error": "Error",
     "success": "Success",
     "warning": "Warning",
-    "or": "or"
+    "or": "or",
+    "info": "Information",
+    "loading": "Loading...",
+    "syncing": "Syncing...",
+    "pullToRefresh": "Pull to refresh",
+    "pullToSync": "Pull to sync",
+    "lastSync": "Last sync: ",
+    "characterCount": "{count}/500",
+    "suggested": "(suggested)",
+    "required": "(Required)",
+    "status": {
+      "online": "Online",
+      "offline": "Offline"
+    },
+    "buttons": {
+      "retry": "Retry",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "save": "Save",
+      "done": "Done",
+      "clear": "Clear",
+      "ok": "OK",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "alerts": {
+      "error": "Error",
+      "success": "Success",
+      "validationError": "Validation Error",
+      "comingSoon": "Coming Soon",
+      "memberManagementComingSoon": "Member management will be available soon",
+      "farmSettingsComingSoon": "Farm settings will be available soon",
+      "dataExportComingSoon": "Data export will be available soon",
+      "databaseError": "Database Error"
+    },
+    "initializing": "Starting Farm Tracker...",
+    "comingSoonPhase2": "Coming soon in Phase 2"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -154,7 +191,7 @@
     "depositAdded": "Deposit added successfully",
     "expenseAdded": "Expense added successfully",
     "paidBy": "Provided by",
-    "memberProvidedFunds": "Member who provided the funds",
+    "memberProvidedFunds": "Member who provided funds",
     "currentUser": "Myself"
   },
   "members": {
@@ -189,7 +226,9 @@
     "noPermission": "You don't have the necessary permissions to manage members.",
     "memberInvited": "Member invited successfully",
     "memberUpdated": "Member updated successfully",
-    "memberRemoved": "Member removed successfully"
+    "memberRemoved": "Member removed successfully",
+    "invitationSent": "Invitation sent successfully",
+    "pendingInvitations": "Pending Invitations"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -220,7 +259,8 @@
     "invalidAmount": "Invalid amount",
     "fieldRequired": "This field is required",
     "minLength": "Minimum {min} characters",
-    "maxLength": "Maximum {max} characters"
+    "maxLength": "Maximum {max} characters",
+    "email": "Email"
   },
   "errors": {
     "generic": "An error occurred",
@@ -257,8 +297,8 @@
     "exceedsRemainingDebt": "Reimbursement amount exceeds remaining debt",
     "invalidReimbursementAmount": "Reimbursement amount must be positive",
     "memberNotFound": "Member not found in this farm",
-    "lastOwnerRemoval": "Cannot remove the last owner of the farm",
-    "lastOwnerRoleChange": "Cannot change the role of the last owner",
+    "lastOwnerRemoval": "Cannot remove last owner of farm",
+    "lastOwnerRoleChange": "Cannot change role of last owner",
     "notALot": "Count operations are only valid for lot-type animals",
     "insufficientLotCount": "Cannot decrease count - insufficient animals in lot",
     "lotCountZero": "Cannot reduce lot count to zero",
@@ -432,6 +472,77 @@
     }
   },
   "mobile": {
+    "common": {
+      "loading": "Loading...",
+      "syncing": "Syncing...",
+      "pullToRefresh": "Pull to refresh",
+      "pullToSync": "Pull to sync",
+      "lastSync": "Last sync: ",
+      "characterCount": "{count}/500",
+      "suggested": "(suggested)",
+      "required": "(Required)",
+      "status": {
+        "online": "Online",
+        "offline": "Offline"
+      },
+      "buttons": {
+        "retry": "Retry",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "save": "Save",
+        "done": "Done",
+        "clear": "Clear",
+        "ok": "OK",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "alerts": {
+        "error": "Error",
+        "success": "Success",
+        "validationError": "Validation Error",
+        "comingSoon": "Coming Soon",
+        "memberManagementComingSoon": "Member management will be available soon",
+        "farmSettingsComingSoon": "Farm settings will be available soon",
+        "dataExportComingSoon": "Data export will be available soon",
+        "databaseError": "Database Error"
+      },
+      "initializing": "Starting Farm Tracker...",
+      "comingSoonPhase2": "Coming soon in Phase 2"
+    },
+    "auth": {
+      "appTitle": "Farm Tracker",
+      "subtitle": "Manage your farm efficiently",
+      "labels": {
+        "email": "Email",
+        "password": "Password"
+      },
+      "placeholders": {
+        "email": "Enter your email",
+        "password": "Enter your password"
+      },
+      "buttons": {
+        "signIn": "Sign In"
+      },
+      "validation": {
+        "emailRequired": "Email is required",
+        "invalidEmail": "Please enter a valid email address",
+        "passwordRequired": "Password is required",
+        "passwordMinLength": "Password must be at least 6 characters",
+        "nameRequired": "Name is required",
+        "role": "Role"
+      },
+      "errors": {
+        "loginFailed": "Login Failed",
+        "invalidCredentials": "Invalid email or password",
+        "validationError": "Validation Error"
+      },
+      "help": {
+        "contactAdmin": "Need help? Contact your administrator"
+      },
+      "confirmPassword": "Confirm Change",
+      "name": "Language"
+    },
     "photo": {
       "capture": "Take Photo",
       "upload": "Choose from Gallery",
@@ -444,18 +555,20 @@
       "camera": "Camera",
       "gallery": "Gallery",
       "cropping": "Cropping photo...",
-      "processing": "Processing photo..."
+      "processing": "Processing photo...",
+      "hasPhoto": "📷"
     },
     "offline": {
-      "syncPending": "Pending sync",
-      "syncingNow": "Syncing...",
-      "syncFailed": "Sync failed",
-      "syncSuccess": "Sync successful",
       "offlineMode": "Offline Mode",
       "dataWillSyncLater": "Data will sync when connection is restored",
       "retrySync": "Retry Sync",
       "lastSyncedAt": "Last synced at {time}",
-      "pendingChanges": "{count} pending changes"
+      "pendingChanges": "{count} pending changes",
+      "syncingNow": "Synchronizing...",
+      "syncPending": "Pending sync",
+      "syncingWithServer": "Syncing with server...",
+      "syncFailed": "Sync failed",
+      "syncSuccess": "Sync successful"
     },
     "camera": {
       "permissionDenied": "Camera permission denied",
@@ -510,67 +623,366 @@
       "useFingerprint": "Use Fingerprint",
       "useFaceId": "Use Face ID",
       "useBiometric": "Use Biometric"
+    },
+    "dashboard": {
+      "loading": "Loading dashboard...",
+      "role": "{{role}}",
+      "sections": {
+        "animals": "Animals",
+        "financial": "Financial",
+        "reminders": "Reminders"
+      },
+      "animals": {
+        "active": "Active",
+        "sold": "Sold",
+        "dead": "Dead",
+        "birthsThisMonth": "Births This Month",
+        "deathsThisMonth": "Deaths This Month"
+      },
+      "financial": {
+        "cashboxBalance": "Cashbox Balance",
+        "outstandingDebt": "Outstanding Debt",
+        "expensesThisMonth": "Expenses This Month",
+        "expensesByCategory": "Expenses by Category"
+      },
+      "reminders": {
+        "urgent": "Urgent",
+        "upcoming": "Upcoming"
+      },
+      "errors": {
+        "loadFailed": "Failed to load dashboard data"
+      },
+      "empty": {
+        "message": "No data available"
+      }
+    },
+    "animals": {
+      "screenTitle": "Animals",
+      "loading": "Loading animals...",
+      "syncingWithServer": "Syncing with server...",
+      "searchPlaceholder": "Search animals (tag, species)...",
+      "alerts": {
+        "editNotYet": "Edit functionality coming soon for {{animalName}}",
+        "details": "Animal Details",
+        "deleteConfirm": "Are you sure you want to delete this animal?"
+      },
+      "errors": {
+        "loadFailed": "Failed to load animals",
+        "deleteFailed": "Failed to delete animal: {{error}}",
+        "noFarm": "No farm selected",
+        "validationError": "Validation Error",
+        "creationFailed": "Failed to create animal"
+      },
+      "success": {
+        "created": "Animal Created Successfully",
+        "syncPending": "{{animalName}} added. Sync pending..."
+      },
+      "filters": {
+        "active": "Active ({{count}})",
+        "individual": "Individual ({{count}})",
+        "lots": "Lots ({{count}})"
+      },
+      "filterResults": "Showing {{count}} of {{total}} animals",
+      "noMatchFilters": "No animals match your filters",
+      "filterAdjustmentHint": "Try adjusting your filters or search terms",
+      "empty": {
+        "title": "No Animals Yet",
+        "description": "Add your first animal to get started tracking your farm"
+      },
+      "footerText": "Showing {{count}} animals • Updated: {{time}}",
+      "commonSpecies": {
+        "cattle": "Cattle",
+        "sheep": "Sheep",
+        "goat": "Goat",
+        "pig": "Pig",
+        "chicken": "Chicken",
+        "duck": "Duck",
+        "horse": "Horse",
+        "rabbit": "Rabbit"
+      },
+      "validation": {
+        "typeRequired": "Please select animal type",
+        "speciesRequired": "Species is required",
+        "speciesMinLength": "Species must be at least 2 characters",
+        "speciesMaxLength": "Species cannot exceed 50 characters",
+        "tagNumberMinLength": "Tag number must be at least 1 character if provided",
+        "invalidBirthDate": "Invalid birth date format",
+        "birthDateFuture": "Birth date cannot be in the future",
+        "ageRange": "Age must be between 0 and 300 months",
+        "lotCountRange": "Lot count must be between 1 and 10,000",
+        "lotCountInvalid": "Lot count is required for lots and not allowed for individuals",
+        "dateAgeMismatch": "Birth date and estimated age don't match"
+      },
+      "createTitle": "Add New Animal",
+      "createSubtitleLot": "Add a group of animals as a lot",
+      "createSubtitleIndividual": "Add a single animal",
+      "sections": {
+        "type": "Animal Type",
+        "basicInfo": "Basic Information",
+        "ageInfo": "Age Information",
+        "status": "Status",
+        "parentInfo": "Parent Information"
+      },
+      "types": {
+        "individual": "Individual",
+        "lot": "Lot"
+      },
+      "labels": {
+        "species": "Species",
+        "tagNumber": "Tag Number (Optional)",
+        "lotCount": "Number of Animals",
+        "sex": "Sex",
+        "birthDate": "Birth Date",
+        "estimatedAge": "Estimated Age (months)",
+        "fatherId": "Father ID",
+        "motherId": "Mother ID"
+      },
+      "placeholders": {
+        "species": "e.g., Cattle, Sheep, Goat",
+        "tagNumber": "e.g., A001, TAG-123",
+        "lotCount": "e.g., 25",
+        "birthDate": "YYYY-MM-DD",
+        "estimatedAge": "e.g., 24 (2 years)",
+        "fatherId": "Enter father's ID or tag",
+        "motherId": "Enter mother's ID or tag"
+      },
+      "sex": {
+        "male": "Male",
+        "female": "Female",
+        "unknown": "Unknown"
+      },
+      "buttons": {
+        "clearFilters": "Clear Filters",
+        "creating": "Creating...",
+        "addAnimal": "Add Animal",
+        "addLot": "Add Lot",
+        "viewDetails": "View Details"
+      },
+      "hints": {
+        "birthDateFormat": "Format: YYYY-MM-DD",
+        "estimatedAge": "Auto-calculated from birth date or enter manually",
+        "offlineSyncNotice": "Changes will be synced when you're back online"
+      }
+    },
+    "events": {
+      "screenTitle": "Events",
+      "eventCount": "{{count}} events",
+      "loading": "Loading events...",
+      "searchPlaceholder": "Search events...",
+      "modal": {
+        "title": "New Event"
+      },
+      "types": {
+        "all": "All",
+        "birth": "Birth",
+        "vaccination": "Vaccination",
+        "vaccines": "Vaccines",
+        "treatment": "Treatment",
+        "weight": "Weight",
+        "sale": "Sale",
+        "death": "Death",
+        "note": "Note"
+      },
+      "typeDescriptions": {
+        "birth": "Record animal birth",
+        "vaccination": "Record vaccination",
+        "treatment": "Medical treatment",
+        "weight": "Weight measurement",
+        "sale": "Animal sale",
+        "death": "Record death",
+        "note": "General observation"
+      },
+      "quickActions": {
+        "vaccination": "Vaccination",
+        "weight": "Weight",
+        "note": "Note",
+        "treatment": "Treatment"
+      },
+      "quickActionDescriptions": {
+        "vaccination": "Record vaccinations",
+        "weight": "Record weight measurement",
+        "note": "Add observation note",
+        "treatment": "Record medical treatment"
+      },
+      "empty": {
+        "title": "No Events Yet",
+        "description": "Record your first farm event",
+        "filterHint": "No events match your filters"
+      },
+      "errors": {
+        "creationFailed": "Failed to create event",
+        "deleteFailed": "Failed to delete event",
+        "animalNotAvailable": "The selected animal is no longer available",
+        "animalNotInFarm": "The selected animal does not belong to this farm"
+      },
+      "labels": {
+        "type": "Event Type",
+        "animal": "Animal",
+        "eventDate": "Event Date",
+        "notes": "Notes",
+        "cost": "Cost",
+        "nextDueDate": "Next Due Date"
+      },
+      "placeholders": {
+        "selectAnimal": "Select an animal",
+        "notes": "Add notes about this event",
+        "cost": "Enter cost"
+      },
+      "alerts": {
+        "success": "Event created successfully!",
+        "editNotYet": "Editing {{eventType}} event - coming soon!",
+        "details": "Viewing {{eventType}} details - coming soon!"
+      },
+      "buttons": {
+        "viewDetails": "View Details"
+      }
+    },
+    "conflicts": {
+      "title": "Sync Conflicts",
+      "subtitle": "{{count}} conflicts need your attention",
+      "confirmResolution": "Confirm Resolution",
+      "serverWinsMessage": "This will keep the server version and discard your local changes. Continue?",
+      "localWinsMessage": "This will keep your local changes and they will be uploaded to the server. Continue?",
+      "keepServer": "Keep Server Version",
+      "keepLocal": "Keep My Changes",
+      "sectionTitle": "Resolved Conflicts",
+      "conflictTypes": {
+        "updateConflict": "Update Conflict",
+        "deleteConflict": "Delete Conflict"
+      },
+      "conflictingFields": "Conflicting fields: {{fields}}",
+      "versions": {
+        "local": "Your Local Changes",
+        "server": "Server Version"
+      },
+      "fields": {
+        "tag": "Tag: {{tag}}",
+        "none": "None",
+        "species": "Species: {{species}}",
+        "status": "Status: {{status}}",
+        "modified": "Modified: {{timestamp}}"
+      },
+      "resolutions": {
+        "serverKept": "Server version kept",
+        "localKept": "Local changes kept"
+      },
+      "buttons": {
+        "done": "Done",
+        "continueLater": "Continue Later"
+      }
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "contextLabel": "Quick actions for selected animal",
+      "contextDescription": "Events will be pre-filled with smart defaults",
+      "actions": {
+        "vaccination": {
+          "label": "Vaccination",
+          "description": "Record vaccinations"
+        },
+        "weight": {
+          "label": "Weight",
+          "description": "Record weight measurement"
+        },
+        "note": {
+          "label": "Note",
+          "description": "Add observation note"
+        },
+        "treatment": {
+          "label": "Treatment",
+          "description": "Medical treatment"
+        }
+      }
+    },
+    "validation": {
+      "animalRequired": "Please select an animal for this event",
+      "animalNotAvailable": "The selected animal is no longer available",
+      "checkForm": "Please check your form data",
+      "typeRequired": "Event type is required",
+      "invalidType": "Invalid event type selected"
+    },
+    "dateFormats": {
+      "setReminder": "Set reminder date",
+      "born": "Born: {{date}}",
+      "cost": "Cost: {{cost}} {{currency}}",
+      "nextDue": "Next due: {{date}}"
+    },
+    "sync": {
+      "pending": "⏳ Pending sync",
+      "failed": "⚠️ Sync failed",
+      "success": "✅ Sync successful"
+    },
+    "status": {
+      "active": "ACTIVE",
+      "sold": "SOLD",
+      "dead": "DEAD",
+      "pending": "Pending",
+      "failed": "Failed"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "viewDetails": "View Details",
+      "deleteAnimalConfirm": "Delete Animal",
+      "deleteAnimalMessage": "Are you sure you want to delete {{tag}}?",
+      "deleteEventConfirm": "Delete Event",
+      "deleteEventMessage": "Are you sure you want to delete this {{type}} event?"
+    },
+    "swipe": {
+      "hint": "←→",
+      "hintText": "Swipe to see actions"
+    },
+    "attachment": {
+      "hasAttachment": "📎"
+    },
+    "animal": {
+      "details": "Tag: {{tag}}, Species: {{species}}, Status: {{status}}, Type: {{type}}",
+      "lotCount": "{{count}} animals",
+      "individual": "Individual"
+    },
+    "event": {
+      "targetType": "Target: {{tag}}",
+      "note": "Note: {{note}}",
+      "cost": "Cost: {{cost}} TND",
+      "nextDue": "Next due: {{date}}"
+    },
+    "settings": {
+      "language": {
+        "current": "Current Language",
+        "title": "Language Settings",
+        "quickAccess": "Quick Language Selection",
+        "fullSelection": "Full Language Selection",
+        "supportedTitle": "Supported Languages",
+        "infoTitle": "Mobile Language",
+        "infoDescription": "Changes will apply to your entire farm experience",
+        "dashboardTitle": "Dashboard Language"
+      },
+      "title": "Settings"
+    },
+    "navigation": {
+      "dashboard": "Dashboard",
+      "animals": "Animals",
+      "events": "Events",
+      "settings": "Settings"
+    },
+    "errors": {
+      "unexpected": "An unexpected error occurred",
+      "networkError": "Network error. Please check your connection.",
+      "serverError": "Server error. Please try again later.",
+      "validation": "Please check your input and try again."
+    },
+    "loading": {
+      "default": "Loading...",
+      "pleaseWait": "Please wait..."
+    },
+    "success": {
+      "operationComplete": "Operation completed successfully",
+      "changesSaved": "Changes saved successfully"
+    },
+    "confirmation": {
+      "delete": "Are you sure you want to delete this item?",
+      "cancel": "Are you sure you want to cancel?",
+      "discard": "Are you sure you want to discard your changes?"
     }
-  },
-  "settings": {
-    "title": "Settings",
-    "language": "Language",
-    "languageDescription": "Choose your preferred language",
-    "notifications": "Notifications",
-    "pushNotifications": "Push Notifications",
-    "emailNotifications": "Email Notifications",
-    "account": "Account",
-    "profile": "Profile",
-    "privacy": "Privacy",
-    "security": "Security",
-    "about": "About",
-    "version": "Version",
-    "buildNumber": "Build Number",
-    "termsOfService": "Terms of Service",
-    "privacyPolicy": "Privacy Policy",
-    "contactSupport": "Contact Support",
-    "logout": "Log Out",
-    "deleteAccount": "Delete Account",
-    "dataUsage": "Data Usage",
-    "cacheSize": "Cache Size",
-    "clearData": "Clear Data",
-    "theme": "Theme",
-    "lightMode": "Light Mode",
-    "darkMode": "Dark Mode",
-    "systemDefault": "System Default"
-  },
-  "language": {
-    "title": "Language Settings",
-    "description": "Select your preferred language for the app interface",
-    "current": "Current Language",
-    "selectLanguage": "Select Language",
-    "changeLanguage": "Change Language",
-    "confirmChange": "Confirm Language Change",
-    "confirmMessage": "Are you sure you want to change the language? The app will restart to apply changes.",
-    "changing": "Changing language...",
-    "restartRequired": "App restart required",
-    "restartNow": "Restart Now",
-    "restartLater": "Restart Later",
-    "downloadingLanguage": "Downloading language pack...",
-    "languageDownloaded": "Language pack downloaded",
-    "downloadFailed": "Failed to download language pack"
-  },
-  "gestures": {
-    "pullToRefresh": "Pull to refresh",
-    "swipeToDelete": "Swipe to delete",
-    "tapToEdit": "Tap to edit",
-    "longPressForOptions": "Long press for options",
-    "pinchToZoom": "Pinch to zoom"
-  },
-  "accessibility": {
-    "backButton": "Back button",
-    "menuButton": "Menu button",
-    "closeButton": "Close button",
-    "searchButton": "Search button",
-    "addButton": "Add button",
-    "editButton": "Edit button",
-    "deleteButton": "Delete button",
-    "saveButton": "Save button",
-    "cancelButton": "Cancel button"
   }
 }

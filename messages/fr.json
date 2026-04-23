@@ -567,7 +567,275 @@
       "useFingerprint": "Utiliser l'empreinte",
       "useFaceId": "Utiliser Face ID",
       "useBiometric": "Utiliser la biométrie"
+    },
+    "auth": {
+      "appTitle": "Farm Tracker",
+      "subtitle": "Connectez-vous à votre compte ferme",
+      "labels": {
+        "email": "Email",
+        "password": "Mot de passe"
+      },
+      "placeholders": {
+        "email": "Entrez votre email",
+        "password": "Entrez votre mot de passe"
+      },
+      "buttons": {
+        "signIn": "Se connecter"
+      },
+      "validation": {
+        "emailRequired": "L'email est requis",
+        "invalidEmail": "Veuillez entrer une adresse email valide",
+        "passwordRequired": "Le mot de passe est requis",
+        "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères"
+      },
+      "errors": {
+        "loginFailed": "Échec de la connexion",
+        "invalidCredentials": "Email ou mot de passe invalides. Veuillez réessayer.",
+        "validationError": "Erreur de validation"
+      },
+      "help": {
+        "contactAdmin": "Besoin d'aide ? Contactez votre administrateur ferme"
+      }
+    },
+    "animals": {
+      "screenTitle": "Animaux",
+      "createTitle": "Ajouter un nouvel animal",
+      "createSubtitleIndividual": "Ajouter un animal individuel avec suivi détaillé",
+      "createSubtitleLot": "Ajouter un groupe d'animaux similaires",
+      "searchPlaceholder": "Rechercher des animaux (étiquette, espèce)...",
+      "filterResults": "{count} de {total} animaux",
+      "footerText": "{count} animaux • Dernière synchro : {time}",
+      "loading": "Chargement des animaux...",
+      "syncingWithServer": "Synchronisation avec le serveur...",
+      "sections": {
+        "type": "Type d'animal",
+        "basicInfo": "Informations de base",
+        "ageInfo": "Informations d'âge",
+        "status": "Statut",
+        "parentInfo": "Informations parentales (Optionnel)"
+      },
+      "types": {
+        "individual": "Individuel",
+        "individualDescription": "Animal unique avec suivi détaillé",
+        "lot": "Lot",
+        "lotDescription": "Groupe d'animaux similaires"
+      },
+      "labels": {
+        "species": "Espèce *",
+        "tagNumber": "Numéro d'étiquette (Optionnel)",
+        "lotCount": "Nombre d'animaux *",
+        "sex": "Sexe (Optionnel)",
+        "birthDate": "Date de naissance (Optionnel)",
+        "estimatedAge": "Âge estimé (mois)",
+        "fatherId": "ID du père",
+        "motherId": "ID de la mère"
+      },
+      "placeholders": {
+        "species": "ex. Bovins, Ovins, Caprins",
+        "tagNumber": "ex. A001, TAG-123",
+        "lotCount": "ex. 25",
+        "birthDate": "AAAA-MM-JJ",
+        "estimatedAge": "ex. 24 (2 ans)",
+        "fatherId": "Entrez l'ID ou l'étiquette du père",
+        "motherId": "Entrez l'ID ou l'étiquette de la mère"
+      },
+      "hints": {
+        "birthDateFormat": "Format : AAAA-MM-JJ (ex. 2024-03-15)",
+        "estimatedAge": "Calcul automatique depuis la date de naissance ou entrer manuellement",
+        "offlineSyncNotice": "🔄 L'animal sera sauvegardé localement et synchronisé lors de la connexion"
+      },
+      "sex": {
+        "male": "Mâle",
+        "female": "Femelle",
+        "unknown": "Inconnu"
+      },
+      "commonSpecies": {
+        "cattle": "Bovins",
+        "sheep": "Ovins",
+        "goat": "Caprins",
+        "pig": "Porcs",
+        "chicken": "Poulets",
+        "duck": "Canards",
+        "horse": "Chevaux",
+        "rabbit": "Lapins"
+      },
+      "filters": {
+        "active": "Actifs ({count})",
+        "individual": "Individuels ({count})",
+        "lots": "Lots ({count})"
+      },
+      "buttons": {
+        "clearFilters": "Effacer les filtres",
+        "creating": "Création en cours...",
+        "addAnimal": "Ajouter un animal",
+        "addLot": "Ajouter un lot",
+        "viewDetails": "Voir les détails"
+      },
+      "statusSubtitle": "{activeCount} actifs, {syncPending} en attente de synchronisation",
+      "noMatchFilters": "Aucun animal ne correspond à vos filtres",
+      "filterAdjustmentHint": "Essayez d'ajuster vos critères de recherche ou de filtre",
+      "empty": {
+        "title": "Aucun animal pour le moment",
+        "description": "Commencez à construire votre troupeau en ajoutant votre premier animal"
+      },
+      "validation": {
+        "typeRequired": "Veuillez sélectionner un type d'animal",
+        "speciesRequired": "L'espèce est requise",
+        "speciesMinLength": "L'espèce doit contenir au moins 2 caractères",
+        "speciesMaxLength": "L'espèce ne peut pas dépasser 50 caractères",
+        "tagNumberMinLength": "Le numéro d'étiquette doit contenir au moins 1 caractère si fourni",
+        "invalidBirthDate": "Format de date de naissance invalide",
+        "birthDateFuture": "La date de naissance ne peut pas être dans le futur",
+        "ageRange": "L'âge ne peut pas être négatif ou dépasser 300 mois",
+        "lotCountRange": "Le nombre du lot doit être entre 1 et 10 000",
+        "lotCountInvalid": "Le nombre du lot est requis pour le type LOT et ne doit pas être fourni pour les animaux INDIVIDUELS",
+        "dateAgeMismatch": "La date de naissance et l'âge estimé ne correspondent pas (tolérance : 3 mois)"
+      },
+      "errors": {
+        "noFarm": "Aucune ferme sélectionnée. Veuillez vous reconnecter.",
+        "validationError": "Erreur de validation",
+        "creationFailed": "Échec de la création de l'animal",
+        "loadFailed": "Échec du chargement des animaux",
+        "deleteFailed": "Échec de la suppression de l'animal : {error}"
+      },
+      "success": {
+        "created": "Animal créé",
+        "syncPending": "{animalName} a été ajouté à votre ferme et sera synchronisé lors de la connexion."
+      },
+      "alerts": {
+        "editNotYet": "Modifier l'animal - Modification de {animalName} - L'écran de modification sera implémenté dans la prochaine itération",
+        "details": "Détails de l'animal",
+        "deleteConfirm": "Supprimer l'animal - Êtes-vous sûr de vouloir supprimer cet animal ? Cette action ne peut pas être annulée."
+      }
+    },
+    "dashboard": {
+      "loading": "Chargement du tableau de bord...",
+      "role": "Rôle : {role}",
+      "sections": {
+        "animals": "🐄 Animaux",
+        "financial": "💰 Financier",
+        "reminders": "🔔 Rappels"
+      },
+      "animals": {
+        "active": "Actifs",
+        "sold": "Vendus",
+        "dead": "Décédés",
+        "birthsThisMonth": "Naissances ce mois",
+        "deathsThisMonth": "Décès ce mois"
+      },
+      "financial": {
+        "cashboxBalance": "Solde de la caisse",
+        "outstandingDebt": "Dette en cours",
+        "expensesThisMonth": "Dépenses ce mois",
+        "expensesByCategory": "Dépenses par catégorie"
+      },
+      "reminders": {
+        "urgent": "Urgent",
+        "upcoming": "À venir"
+      },
+      "errors": {
+        "loadFailed": "Échec du chargement des données du tableau de bord. Tirer pour actualiser."
+      },
+      "empty": {
+        "message": "Bienvenue dans Farm Tracker ! Commencez par ajouter votre premier animal."
+      }
+    },
+    "profile": {
+      "appVersion": "Farm Tracker Mobile v1.0.0",
+      "appPhase": "Phase 1 Fondation",
+      "menu": {
+        "accountSettings": "Paramètres du compte",
+        "accountSettingsDescription": "Gérer votre profil et préférences",
+        "farmMembers": "Membres de la ferme",
+        "farmMembersDescription": "Gérer l'accès de l'équipe et les permissions",
+        "farmSettings": "Paramètres de la ferme",
+        "farmSettingsDescription": "Configurer les préférences de la ferme",
+        "dataExport": "Export des données",
+        "dataExportDescription": "Exporter vos données ferme",
+        "syncStatus": "État de synchronisation",
+        "helpSupport": "Aide et support",
+        "helpSupportDescription": "Obtenir de l'aide et contacter le support"
+      },
+      "buttons": {
+        "signOut": "Se déconnecter"
+      },
+      "alerts": {
+        "signOutConfirm": "Se déconnecter",
+        "signOutMessage": "Êtes-vous sûr de vouloir vous déconnecter ?",
+        "syncPending": "Vous avez des modifications en attente qui seront synchronisées lors de la connexion.",
+        "syncComplete": "Toutes les données sont synchronisées avec le serveur.",
+        "helpMessage": "Pour du support, veuillez contacter votre administrateur ferme"
+      }
+    },
+    "conflicts": {
+      "title": "Conflits de synchronisation",
+      "subtitle": "{count} conflits nécessitent votre attention",
+      "types": {
+        "update": "Conflit de mise à jour",
+        "delete": "Conflit de suppression"
+      },
+      "versionLocal": "Vos modifications locales",
+      "versionServer": "Version du serveur",
+      "conflictingFields": "Champs en conflit : {fields}",
+      "fields": {
+        "tag": "Étiquette : ",
+        "species": "Espèce : ",
+        "status": "Statut : "
+      },
+      "buttons": {
+        "keepServer": "Garder la version du serveur",
+        "keepLocal": "Garder les modifications locales"
+      },
+      "alerts": {
+        "confirmServerWins": "Cela va écarter vos modifications locales et garder la version du serveur.",
+        "confirmLocalWins": "Cela va écraser les données du serveur avec vos modifications locales."
+      },
+      "resolvedSection": "Conflits résolus",
+      "resolved": "Résolu - version {version} gardée"
+    },
+    "common": {
+      "loading": "Chargement...",
+      "syncing": "Synchronisation...",
+      "pullToRefresh": "Tirer pour actualiser",
+      "pullToSync": "Tirer pour synchroniser",
+      "lastSync": "Dernière synchronisation : ",
+      "characterCount": "{count}/500",
+      "suggested": "(suggéré)",
+      "required": "*",
+      "status": {
+        "online": "En ligne",
+        "offline": "Hors ligne"
+      },
+      "buttons": {
+        "retry": "Réessayer",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "save": "Sauvegarder",
+        "done": "Terminé",
+        "clear": "Effacer"
+      },
+      "alerts": {
+        "error": "Erreur",
+        "success": "Succès",
+        "comingSoon": "Bientôt disponible",
+        "memberManagementComingSoon": "La gestion des membres sera bientôt disponible",
+        "farmSettingsComingSoon": "Les paramètres de la ferme seront bientôt disponibles",
+        "dataExportComingSoon": "L'export des données sera bientôt disponible",
+        "databaseError": "Erreur de base de données"
+      },
+      "initializing": "Démarrage de Farm Tracker...",
+      "comingSoonPhase2": "Bientôt disponible dans la Phase 2"
     }
+  },
+  "actions": {
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "viewDetails": "Voir les détails",
+    "deleteAnimalConfirm": "Supprimer l'animal",
+    "deleteAnimalMessage": "Êtes-vous sûr de vouloir supprimer {{tag}} ?",
+    "deleteEventConfirm": "Supprimer l'événement",
+    "deleteEventMessage": "Êtes-vous sûr de vouloir supprimer cet événement {{type}} ?"
   },
   "settings": {
     "title": "Paramètres",
