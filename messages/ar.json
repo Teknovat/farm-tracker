@@ -431,5 +431,147 @@
       "invalidType": "معرف الأم يجب أن يكون نصاً",
       "invalidFormat": "تنسيق معرف الأم غير صالح"
     }
+  },
+  "mobile": {
+    "photo": {
+      "capture": "التقاط صورة",
+      "upload": "اختيار من المعرض",
+      "compression": "جاري الضغط...",
+      "uploadProgress": "جاري الرفع...",
+      "uploadFailed": "فشل الرفع",
+      "uploadSuccess": "تم رفع الصورة بنجاح",
+      "retryUpload": "إعادة المحاولة",
+      "selectSource": "اختيار مصدر الصورة",
+      "camera": "الكاميرا",
+      "gallery": "المعرض",
+      "cropping": "جاري قص الصورة...",
+      "processing": "جاري معالجة الصورة..."
+    },
+    "offline": {
+      "syncPending": "في انتظار المزامنة",
+      "syncingNow": "جاري المزامنة...",
+      "syncFailed": "فشلت المزامنة",
+      "syncSuccess": "تمت المزامنة بنجاح",
+      "offlineMode": "وضع عدم الاتصال",
+      "dataWillSyncLater": "ستتم مزامنة البيانات عند استعادة الاتصال",
+      "retrySync": "إعادة المحاولة",
+      "lastSyncedAt": "آخر مزامنة في {time}",
+      "pendingChanges": "{count} تغييرات في الانتظار"
+    },
+    "camera": {
+      "permissionDenied": "تم رفض إذن الكاميرا",
+      "permissionRequest": "السماح بالوصول للكاميرا",
+      "openSettings": "فتح الإعدادات",
+      "cameraNotAvailable": "الكاميرا غير متوفرة",
+      "switchCamera": "تبديل الكاميرا",
+      "flash": "الفلاش",
+      "flashOn": "تشغيل الفلاش",
+      "flashOff": "إيقاف الفلاش",
+      "flashAuto": "فلاش تلقائي"
+    },
+    "gallery": {
+      "permissionDenied": "تم رفض إذن المعرض",
+      "permissionRequest": "السماح بالوصول للمعرض",
+      "noPhotosFound": "لم يتم العثور على صور",
+      "selectPhoto": "اختيار صورة",
+      "multiplePhotos": "اختيار صور متعددة"
+    },
+    "location": {
+      "permissionDenied": "تم رفض إذن الموقع",
+      "permissionRequest": "السماح بالوصول للموقع",
+      "locationNotAvailable": "الموقع غير متوفر",
+      "currentLocation": "الموقع الحالي",
+      "latitude": "خط العرض",
+      "longitude": "خط الطول",
+      "accuracy": "الدقة"
+    },
+    "notifications": {
+      "permissionDenied": "تم رفض إذن الإشعارات",
+      "permissionRequest": "السماح بالإشعارات",
+      "eventReminder": "تذكير بالحدث",
+      "syncComplete": "اكتملت المزامنة",
+      "newUpdate": "تحديث جديد متوفر"
+    },
+    "storage": {
+      "insufficientSpace": "مساحة تخزين غير كافية",
+      "clearCache": "مسح التخزين المؤقت",
+      "cacheCleared": "تم مسح التخزين المؤقت بنجاح",
+      "storageUsage": "استخدام التخزين"
+    },
+    "connectivity": {
+      "noConnection": "لا يوجد اتصال بالإنترنت",
+      "connectionRestored": "تم استعادة الاتصال",
+      "workingOffline": "العمل دون اتصال",
+      "checkConnection": "تحقق من اتصال الإنترنت"
+    },
+    "biometric": {
+      "authRequired": "مطلوب مصادقة بيومترية",
+      "authFailed": "فشل في المصادقة",
+      "authSuccess": "تمت المصادقة بنجاح",
+      "useFingerprint": "استخدام بصمة الإصبع",
+      "useFaceId": "استخدام Face ID",
+      "useBiometric": "استخدام القياسات الحيوية"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "language": "اللغة",
+    "languageDescription": "اختر لغتك المفضلة",
+    "notifications": "الإشعارات",
+    "pushNotifications": "الإشعارات الفورية",
+    "emailNotifications": "إشعارات البريد الإلكتروني",
+    "account": "الحساب",
+    "profile": "الملف الشخصي",
+    "privacy": "الخصوصية",
+    "security": "الأمان",
+    "about": "حول",
+    "version": "الإصدار",
+    "buildNumber": "رقم البناء",
+    "termsOfService": "شروط الخدمة",
+    "privacyPolicy": "سياسة الخصوصية",
+    "contactSupport": "اتصل بالدعم",
+    "logout": "تسجيل الخروج",
+    "deleteAccount": "حذف الحساب",
+    "dataUsage": "استخدام البيانات",
+    "cacheSize": "حجم التخزين المؤقت",
+    "clearData": "مسح البيانات",
+    "theme": "المظهر",
+    "lightMode": "المظهر الفاتح",
+    "darkMode": "المظهر الداكن",
+    "systemDefault": "افتراضي النظام"
+  },
+  "language": {
+    "title": "إعدادات اللغة",
+    "description": "اختر لغتك المفضلة لواجهة التطبيق",
+    "current": "اللغة الحالية",
+    "selectLanguage": "اختر اللغة",
+    "changeLanguage": "تغيير اللغة",
+    "confirmChange": "تأكيد تغيير اللغة",
+    "confirmMessage": "هل أنت متأكد من أنك تريد تغيير اللغة؟ سيعيد التطبيق تشغيله لتطبيق التغييرات.",
+    "changing": "جاري تغيير اللغة...",
+    "restartRequired": "مطلوب إعادة تشغيل التطبيق",
+    "restartNow": "إعادة التشغيل الآن",
+    "restartLater": "إعادة التشغيل لاحقاً",
+    "downloadingLanguage": "جاري تحميل حزمة اللغة...",
+    "languageDownloaded": "تم تحميل حزمة اللغة",
+    "downloadFailed": "فشل في تحميل حزمة اللغة"
+  },
+  "gestures": {
+    "pullToRefresh": "اسحب للتحديث",
+    "swipeToDelete": "اسحب للحذف",
+    "tapToEdit": "انقر للتحرير",
+    "longPressForOptions": "اضغط طويلاً للخيارات",
+    "pinchToZoom": "اقرص للتكبير"
+  },
+  "accessibility": {
+    "backButton": "زر الرجوع",
+    "menuButton": "زر القائمة",
+    "closeButton": "زر الإغلاق",
+    "searchButton": "زر البحث",
+    "addButton": "زر الإضافة",
+    "editButton": "زر التحرير",
+    "deleteButton": "زر الحذف",
+    "saveButton": "زر الحفظ",
+    "cancelButton": "زر الإلغاء"
   }
 }

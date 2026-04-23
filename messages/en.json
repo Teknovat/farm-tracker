@@ -430,5 +430,147 @@
       "invalidType": "Mother ID must be a string",
       "invalidFormat": "Invalid mother ID format"
     }
+  },
+  "mobile": {
+    "photo": {
+      "capture": "Take Photo",
+      "upload": "Choose from Gallery",
+      "compression": "Compressing...",
+      "uploadProgress": "Uploading...",
+      "uploadFailed": "Upload Failed",
+      "uploadSuccess": "Photo uploaded successfully",
+      "retryUpload": "Retry Upload",
+      "selectSource": "Select Photo Source",
+      "camera": "Camera",
+      "gallery": "Gallery",
+      "cropping": "Cropping photo...",
+      "processing": "Processing photo..."
+    },
+    "offline": {
+      "syncPending": "Pending sync",
+      "syncingNow": "Syncing...",
+      "syncFailed": "Sync failed",
+      "syncSuccess": "Sync successful",
+      "offlineMode": "Offline Mode",
+      "dataWillSyncLater": "Data will sync when connection is restored",
+      "retrySync": "Retry Sync",
+      "lastSyncedAt": "Last synced at {time}",
+      "pendingChanges": "{count} pending changes"
+    },
+    "camera": {
+      "permissionDenied": "Camera permission denied",
+      "permissionRequest": "Allow camera access",
+      "openSettings": "Open Settings",
+      "cameraNotAvailable": "Camera not available",
+      "switchCamera": "Switch Camera",
+      "flash": "Flash",
+      "flashOn": "Flash On",
+      "flashOff": "Flash Off",
+      "flashAuto": "Flash Auto"
+    },
+    "gallery": {
+      "permissionDenied": "Gallery permission denied",
+      "permissionRequest": "Allow gallery access",
+      "noPhotosFound": "No photos found",
+      "selectPhoto": "Select Photo",
+      "multiplePhotos": "Select Multiple Photos"
+    },
+    "location": {
+      "permissionDenied": "Location permission denied",
+      "permissionRequest": "Allow location access",
+      "locationNotAvailable": "Location not available",
+      "currentLocation": "Current Location",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "accuracy": "Accuracy"
+    },
+    "notifications": {
+      "permissionDenied": "Notification permission denied",
+      "permissionRequest": "Allow notification access",
+      "eventReminder": "Event Reminder",
+      "syncComplete": "Sync Complete",
+      "newUpdate": "New Update Available"
+    },
+    "storage": {
+      "insufficientSpace": "Insufficient storage space",
+      "clearCache": "Clear Cache",
+      "cacheCleared": "Cache cleared successfully",
+      "storageUsage": "Storage Usage"
+    },
+    "connectivity": {
+      "noConnection": "No internet connection",
+      "connectionRestored": "Connection restored",
+      "workingOffline": "Working offline",
+      "checkConnection": "Check your internet connection"
+    },
+    "biometric": {
+      "authRequired": "Biometric authentication required",
+      "authFailed": "Authentication failed",
+      "authSuccess": "Authentication successful",
+      "useFingerprint": "Use Fingerprint",
+      "useFaceId": "Use Face ID",
+      "useBiometric": "Use Biometric"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "languageDescription": "Choose your preferred language",
+    "notifications": "Notifications",
+    "pushNotifications": "Push Notifications",
+    "emailNotifications": "Email Notifications",
+    "account": "Account",
+    "profile": "Profile",
+    "privacy": "Privacy",
+    "security": "Security",
+    "about": "About",
+    "version": "Version",
+    "buildNumber": "Build Number",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "contactSupport": "Contact Support",
+    "logout": "Log Out",
+    "deleteAccount": "Delete Account",
+    "dataUsage": "Data Usage",
+    "cacheSize": "Cache Size",
+    "clearData": "Clear Data",
+    "theme": "Theme",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode",
+    "systemDefault": "System Default"
+  },
+  "language": {
+    "title": "Language Settings",
+    "description": "Select your preferred language for the app interface",
+    "current": "Current Language",
+    "selectLanguage": "Select Language",
+    "changeLanguage": "Change Language",
+    "confirmChange": "Confirm Language Change",
+    "confirmMessage": "Are you sure you want to change the language? The app will restart to apply changes.",
+    "changing": "Changing language...",
+    "restartRequired": "App restart required",
+    "restartNow": "Restart Now",
+    "restartLater": "Restart Later",
+    "downloadingLanguage": "Downloading language pack...",
+    "languageDownloaded": "Language pack downloaded",
+    "downloadFailed": "Failed to download language pack"
+  },
+  "gestures": {
+    "pullToRefresh": "Pull to refresh",
+    "swipeToDelete": "Swipe to delete",
+    "tapToEdit": "Tap to edit",
+    "longPressForOptions": "Long press for options",
+    "pinchToZoom": "Pinch to zoom"
+  },
+  "accessibility": {
+    "backButton": "Back button",
+    "menuButton": "Menu button",
+    "closeButton": "Close button",
+    "searchButton": "Search button",
+    "addButton": "Add button",
+    "editButton": "Edit button",
+    "deleteButton": "Delete button",
+    "saveButton": "Save button",
+    "cancelButton": "Cancel button"
   }
 }

@@ -487,5 +487,147 @@
       "invalidType": "L'identifiant de la mère doit être une chaîne de caractères",
       "invalidFormat": "Format d'identifiant de la mère invalide"
     }
+  },
+  "mobile": {
+    "photo": {
+      "capture": "Prendre photo",
+      "upload": "Choisir depuis galerie",
+      "compression": "Compression en cours...",
+      "uploadProgress": "Upload en cours...",
+      "uploadFailed": "Échec de l'upload",
+      "uploadSuccess": "Photo téléchargée avec succès",
+      "retryUpload": "Réessayer l'upload",
+      "selectSource": "Sélectionner la source de la photo",
+      "camera": "Appareil photo",
+      "gallery": "Galerie",
+      "cropping": "Recadrage de la photo...",
+      "processing": "Traitement de la photo..."
+    },
+    "offline": {
+      "syncPending": "En attente de synchronisation",
+      "syncingNow": "Synchronisation en cours...",
+      "syncFailed": "Échec de synchronisation",
+      "syncSuccess": "Synchronisation réussie",
+      "offlineMode": "Mode hors ligne",
+      "dataWillSyncLater": "Les données se synchroniseront à la reconnexion",
+      "retrySync": "Réessayer la sync",
+      "lastSyncedAt": "Dernière sync à {time}",
+      "pendingChanges": "{count} modifications en attente"
+    },
+    "camera": {
+      "permissionDenied": "Permission caméra refusée",
+      "permissionRequest": "Autoriser l'accès à la caméra",
+      "openSettings": "Ouvrir les paramètres",
+      "cameraNotAvailable": "Caméra non disponible",
+      "switchCamera": "Changer de caméra",
+      "flash": "Flash",
+      "flashOn": "Flash activé",
+      "flashOff": "Flash désactivé",
+      "flashAuto": "Flash automatique"
+    },
+    "gallery": {
+      "permissionDenied": "Permission galerie refusée",
+      "permissionRequest": "Autoriser l'accès à la galerie",
+      "noPhotosFound": "Aucune photo trouvée",
+      "selectPhoto": "Sélectionner une photo",
+      "multiplePhotos": "Sélectionner plusieurs photos"
+    },
+    "location": {
+      "permissionDenied": "Permission localisation refusée",
+      "permissionRequest": "Autoriser l'accès à la localisation",
+      "locationNotAvailable": "Localisation non disponible",
+      "currentLocation": "Position actuelle",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "accuracy": "Précision"
+    },
+    "notifications": {
+      "permissionDenied": "Permission notifications refusée",
+      "permissionRequest": "Autoriser les notifications",
+      "eventReminder": "Rappel d'événement",
+      "syncComplete": "Synchronisation terminée",
+      "newUpdate": "Nouvelle mise à jour disponible"
+    },
+    "storage": {
+      "insufficientSpace": "Espace de stockage insuffisant",
+      "clearCache": "Vider le cache",
+      "cacheCleared": "Cache vidé avec succès",
+      "storageUsage": "Utilisation du stockage"
+    },
+    "connectivity": {
+      "noConnection": "Aucune connexion internet",
+      "connectionRestored": "Connexion rétablie",
+      "workingOffline": "Fonctionnement hors ligne",
+      "checkConnection": "Vérifiez votre connexion internet"
+    },
+    "biometric": {
+      "authRequired": "Authentification biométrique requise",
+      "authFailed": "Échec de l'authentification",
+      "authSuccess": "Authentification réussie",
+      "useFingerprint": "Utiliser l'empreinte",
+      "useFaceId": "Utiliser Face ID",
+      "useBiometric": "Utiliser la biométrie"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "languageDescription": "Choisir votre langue préférée",
+    "notifications": "Notifications",
+    "pushNotifications": "Notifications push",
+    "emailNotifications": "Notifications email",
+    "account": "Compte",
+    "profile": "Profil",
+    "privacy": "Confidentialité",
+    "security": "Sécurité",
+    "about": "À propos",
+    "version": "Version",
+    "buildNumber": "Numéro de build",
+    "termsOfService": "Conditions d'utilisation",
+    "privacyPolicy": "Politique de confidentialité",
+    "contactSupport": "Contacter le support",
+    "logout": "Se déconnecter",
+    "deleteAccount": "Supprimer le compte",
+    "dataUsage": "Utilisation des données",
+    "cacheSize": "Taille du cache",
+    "clearData": "Effacer les données",
+    "theme": "Thème",
+    "lightMode": "Mode clair",
+    "darkMode": "Mode sombre",
+    "systemDefault": "Par défaut du système"
+  },
+  "language": {
+    "title": "Paramètres de langue",
+    "description": "Sélectionnez votre langue préférée pour l'interface de l'application",
+    "current": "Langue actuelle",
+    "selectLanguage": "Sélectionner la langue",
+    "changeLanguage": "Changer de langue",
+    "confirmChange": "Confirmer le changement de langue",
+    "confirmMessage": "Êtes-vous sûr de vouloir changer de langue ? L'application redémarrera pour appliquer les modifications.",
+    "changing": "Changement de langue en cours...",
+    "restartRequired": "Redémarrage de l'application requis",
+    "restartNow": "Redémarrer maintenant",
+    "restartLater": "Redémarrer plus tard",
+    "downloadingLanguage": "Téléchargement du pack de langue...",
+    "languageDownloaded": "Pack de langue téléchargé",
+    "downloadFailed": "Échec du téléchargement du pack de langue"
+  },
+  "gestures": {
+    "pullToRefresh": "Tirer pour actualiser",
+    "swipeToDelete": "Glisser pour supprimer",
+    "tapToEdit": "Appuyer pour modifier",
+    "longPressForOptions": "Appui long pour les options",
+    "pinchToZoom": "Pincer pour zoomer"
+  },
+  "accessibility": {
+    "backButton": "Bouton retour",
+    "menuButton": "Bouton menu",
+    "closeButton": "Bouton fermer",
+    "searchButton": "Bouton recherche",
+    "addButton": "Bouton ajouter",
+    "editButton": "Bouton modifier",
+    "deleteButton": "Bouton supprimer",
+    "saveButton": "Bouton enregistrer",
+    "cancelButton": "Bouton annuler"
   }
 }
